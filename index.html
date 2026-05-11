@@ -1177,6 +1177,17 @@ async function deleteRecord(id) {
   showSaveIndicator();
 }
 
+async function confirmDeleteRecord(id) {
+  if (!confirm('Eliminar este registo? Esta ação não pode ser desfeita.')) return;
+  try {
+    await deleteRecord(id);
+    renderHistory();
+    renderDashboard();
+  } catch(e) {
+    alert('❌ Erro ao eliminar registo: ' + e.message);
+  }
+}
+
 // ============================================================
 // ESTADO DAS ZONAS
 // ============================================================
@@ -1567,7 +1578,7 @@ function renderHistory() {
       <td>
         <button class="expand-btn" onclick="toggleDetail(${r.id})">Ver detalhes</button>
         ${canEdit ? `<button class="expand-btn" style="color:var(--secondary);margin-left:8px;" onclick="openEditRecord(${r.id})">✏️ Editar</button>` : ''}
-        ${currentTeam === 'admin' ? `<button class="expand-btn" style="color:var(--danger);margin-left:8px;" onclick="if(confirm('Eliminar este registo?'))deleteRecord(${r.id}),renderHistory()">Eliminar</button>` : ''}
+        ${currentTeam === 'admin' ? `<button class="expand-btn" style="color:var(--danger);margin-left:8px;" onclick="confirmDeleteRecord(${r.id})">Eliminar</button>` : ''}
         <div class="record-detail" id="detail-${r.id}">
           ${hasStreets ? `<p><strong>Ruas concluídas:</strong> ${r.streetsCompleted.join(', ')}</p>` : ''}
           ${hasObs ? `<p style="margin-top:8px;"><strong>Observações:</strong> ${r.observations}</p>` : ''}
