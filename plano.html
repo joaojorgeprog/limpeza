@@ -1251,5 +1251,31 @@
   </div>
 
 </div><!-- /container -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (async () => {
+    const _sb = window.supabase.createClient(
+      'https://iveutdmlyqbbbvgfosea.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2ZXV0ZG1seXFiYmJ2Z2Zvc2VhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Mjc4NDcsImV4cCI6MjA5NDEwMzg0N30.8mqB-ZBBzg7MjriLJI3ZG7Cx0nZ2BD3DdWHco33RJbE'
+    );
+
+    try {
+      const { data: { session } } = await _sb.auth.getSession();
+      if (session && session.user.email === 'admin@minde.pt') return; // autorizado
+    } catch(e) {}
+
+    // Não autenticado ou não é admin — redirecionar
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+                  background:#f1f5f9;font-family:system-ui,sans-serif;gap:16px;padding:24px;text-align:center;">
+        <div style="font-size:52px;">🔒</div>
+        <h1 style="font-size:22px;font-weight:800;color:#1e293b;">Acesso restrito</h1>
+        <p style="color:#64748b;max-width:340px;">Esta página é apenas acessível ao administrador.<br>Faça login primeiro.</p>
+        <a href="/" style="margin-top:8px;padding:12px 28px;background:#2c6e49;color:white;border-radius:10px;
+                           font-weight:700;text-decoration:none;font-size:15px;">← Voltar ao login</a>
+      </div>`;
+  })();
+</script>
 </body>
 </html>
