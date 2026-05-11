@@ -1,0 +1,2711 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Limpeza — Freguesia de Minde</title>
+  <style>
+    :root {
+      --primary: #2c6e49;
+      --primary-dark: #1b4d33;
+      --primary-light: #4a9068;
+      --secondary: #3b82f6;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --neutral: #6b7280;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* ===== LOGIN ===== */
+    #login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1b4d33 0%, #2c6e49 50%, #4a9068 100%);
+      position: relative; overflow: hidden;
+    }
+    #login-screen::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+      animation: shimmer 8s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+    .login-card {
+      background: white; border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35); position: relative; z-index: 1;
+    }
+    .login-logo { text-align: center; margin-bottom: 36px; }
+    .login-logo .emoji { font-size: 52px; display: block; margin-bottom: 12px; }
+    .login-logo h1 { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .login-logo p { color: var(--text-muted); font-size: 14px; }
+    .login-form label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .login-form .form-group { margin-bottom: 20px; }
+    .login-form select, .login-form input {
+      width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px;
+      font-size: 15px; color: var(--text); transition: border-color 0.2s; outline: none; background: white;
+    }
+    .login-form select:focus, .login-form input:focus { border-color: var(--primary); }
+    .btn-login {
+      width: 100%; padding: 14px; background: var(--primary); color: white; border: none;
+      border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .btn-login:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(44,110,73,0.4); }
+    .login-error { color: var(--danger); font-size: 13px; margin-top: 10px; text-align: center; display: none; }
+    .login-hint { text-align: center; margin-top: 20px; font-size: 12px; color: var(--text-muted); background: #f8fafc; border-radius: 8px; padding: 10px; }
+    .login-hint strong { color: var(--text); }
+
+    /* ===== APP ===== */
+    #app { display: none; min-height: 100vh; }
+    .header {
+      background: var(--primary); color: white; padding: 0 24px; height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 200; box-shadow: var(--shadow-md);
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-logo { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .header-sub { font-size: 12px; opacity: 0.75; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .team-badge {
+      background: rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 14px;
+      font-size: 13px; font-weight: 600;
+    }
+    .btn-logout {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      color: white; border-radius: 8px; padding: 6px 14px; cursor: pointer;
+      font-size: 13px; transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+    /* ===== NAV ===== */
+    .nav {
+      background: white; border-bottom: 1px solid var(--border);
+      display: flex; overflow-x: auto; padding: 0 8px;
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .nav::-webkit-scrollbar { height: 0; }
+    .nav-btn {
+      padding: 14px 18px; border: none; background: none; cursor: pointer;
+      font-size: 14px; color: var(--text-muted); white-space: nowrap;
+      border-bottom: 3px solid transparent; transition: all 0.2s; font-weight: 500;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-btn:hover { color: var(--primary); }
+    .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+
+    /* ===== SECTIONS ===== */
+    .section { display: none; max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+    .section.active { display: block; }
+
+    /* ===== COMMON COMPONENTS ===== */
+    .page-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .page-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+    .card { background: white; border-radius: 14px; padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    @media(max-width: 900px) { .grid-4 { grid-template-columns: repeat(2,1fr); } .grid-3 { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .section { padding: 16px; } }
+    .stat-card {
+      background: white; border-radius: 14px; padding: 20px; box-shadow: var(--shadow);
+      border-left: 4px solid transparent;
+    }
+    .stat-card .stat-val { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .stat-card .stat-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+    .stat-card.green { border-left-color: var(--success); }
+    .stat-card.green .stat-val { color: var(--success); }
+    .stat-card.yellow { border-left-color: var(--warning); }
+    .stat-card.yellow .stat-val { color: var(--warning); }
+    .stat-card.red { border-left-color: var(--danger); }
+    .stat-card.red .stat-val { color: var(--danger); }
+    .stat-card.blue { border-left-color: var(--secondary); }
+    .stat-card.blue .stat-val { color: var(--secondary); }
+
+    /* ===== BADGES ===== */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-yellow { background: #fef9c3; color: #a16207; }
+    .badge-red { background: #fee2e2; color: #dc2626; }
+    .badge-gray { background: #f1f5f9; color: #64748b; }
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-alta { background: #fee2e2; color: #dc2626; }
+    .badge-media { background: #fef9c3; color: #a16207; }
+    .badge-baixa { background: #dcfce7; color: #15803d; }
+    .badge-a { background: #e8f5e9; color: #2c6e49; }
+    .badge-b { background: #dbeafe; color: #1d4ed8; }
+    .badge-c { background: #fce7f3; color: #be185d; }
+
+    /* ===== ZONE GRID ===== */
+    .zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .zone-card {
+      background: white; border-radius: 12px; padding: 16px; box-shadow: var(--shadow);
+      border-top: 4px solid #e2e8f0; cursor: default; transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .zone-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .zone-card.ok { border-top-color: var(--success); }
+    .zone-card.warning { border-top-color: var(--warning); }
+    .zone-card.overdue { border-top-color: var(--danger); }
+    .zone-card.never { border-top-color: var(--neutral); }
+    .zone-code { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .zone-name { font-size: 14px; font-weight: 700; color: var(--text); margin: 4px 0; line-height: 1.3; }
+    .zone-locality { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .zone-info { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .zone-last { font-size: 12px; color: var(--text-muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+    /* ===== FORMS ===== */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media(max-width:600px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: 20px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 11px 14px; border: 2px solid var(--border); border-radius: 10px;
+      font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s;
+      background: white; font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .streets-container { border: 2px solid var(--border); border-radius: 10px; padding: 12px; max-height: 200px; overflow-y: auto; }
+    .streets-container label { display: flex; align-items: center; gap: 8px; padding: 6px 4px; cursor: pointer; border-radius: 6px; transition: background 0.1s; font-size: 14px; font-weight: normal; text-transform: none; letter-spacing: 0; color: var(--text); }
+    .streets-container label:hover { background: #f8fafc; }
+    .streets-container input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); flex-shrink: 0; }
+    .photo-upload-area {
+      border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    }
+    .photo-upload-area:hover { border-color: var(--primary); background: #f0fdf4; }
+    .photo-upload-area .icon { font-size: 32px; margin-bottom: 8px; }
+    .photo-upload-area p { font-size: 14px; color: var(--text-muted); }
+    .photo-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .photo-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border); }
+    .btn { padding: 11px 22px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #c53030; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 16px; font-size: 14px; font-weight: 500; }
+    .alert-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .alert-error { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+
+    /* ===== TABLE ===== */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead th { background: #f8fafc; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+    .expand-btn { background: none; border: none; cursor: pointer; color: var(--primary); font-size: 12px; text-decoration: underline; }
+    .record-detail { background: #f8fafc; padding: 12px 14px; border-radius: 8px; margin-top: 8px; font-size: 13px; display: none; }
+    .record-detail.open { display: block; }
+
+    /* ===== PLAN ===== */
+    .plan-zone-card { background: white; border-radius: 14px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; border-left: 5px solid var(--primary); }
+    .plan-zone-card.alta { border-left-color: var(--danger); }
+    .plan-zone-card.media { border-left-color: var(--warning); }
+    .plan-zone-card.baixa { border-left-color: var(--success); }
+    .plan-zone-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
+    .plan-zone-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .plan-zone-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+    .plan-zone-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+    .streets-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .street-tag { background: #f1f5f9; border-radius: 6px; padding: 3px 10px; font-size: 13px; color: var(--text); }
+
+    /* ===== CALENDAR ===== */
+    .calendar-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .calendar-table th { background: var(--primary); color: white; padding: 10px 12px; text-align: center; font-size: 12px; font-weight: 700; }
+    .calendar-table td { padding: 10px 12px; border: 1px solid var(--border); vertical-align: top; text-align: center; }
+    .calendar-table tr:nth-child(even) td { background: #f8fafc; }
+    .cal-zone { display: inline-block; background: #e8f5e9; color: #1b5e20; border-radius: 4px; padding: 2px 6px; font-size: 11px; font-weight: 700; margin: 2px; }
+    .cal-zone.hd { background: #fce4ec; color: #880e4f; }
+    .cal-zone.ld { background: #e3f2fd; color: #0d47a1; }
+    .cal-buffer { color: var(--text-muted); font-style: italic; font-size: 12px; }
+
+    /* ===== REPORTS ===== */
+    .report-zone-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .report-zone-row:last-child { border-bottom: none; }
+    .progress-bar { flex: 1; min-width: 120px; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .export-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
+    /* ===== FILTERS ===== */
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: flex-end; }
+    .filter-group { display: flex; flex-direction: column; gap: 4px; }
+    .filter-group label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .filter-group select, .filter-group input { padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; background: white; }
+    .filter-group select:focus, .filter-group input:focus { border-color: var(--primary); }
+
+    /* ===== PRINT ===== */
+    @media print {
+      .header, .nav, .btn-row, .export-btn-row, .filters, #login-screen { display: none !important; }
+      .section { display: block !important; padding: 0; max-width: 100%; }
+      .card, .plan-zone-card, .stat-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+      body { background: white; }
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state p { font-size: 16px; }
+
+    /* ===== STREET MANAGEMENT ===== */
+    .zone-street-block { background: white; border-radius: 12px; padding: 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
+    .zone-street-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .zone-street-title { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
+    .street-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .street-item:last-child { border-bottom: none; }
+    .btn-remove-street { background: none; border: none; cursor: pointer; font-size: 14px; color: var(--danger); padding: 2px 6px; border-radius: 4px; transition: background 0.15s; }
+    .btn-remove-street:hover { background: #fee2e2; }
+    .add-street-row { display: flex; gap: 8px; margin-top: 10px; }
+    .add-street-row input { flex: 1; padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; }
+    .add-street-row input:focus { border-color: var(--primary); }
+    .btn-add-street { padding: 8px 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-add-street:hover { background: var(--primary-dark); }
+    .street-error { font-size: 12px; color: var(--danger); margin-top: 4px; display: none; }
+
+    /* ===== URGÊNCIAS ===== */
+    .urgencia-card { background: white; border-radius: 12px; padding: 18px; box-shadow: var(--shadow); margin-bottom: 14px; border-left: 5px solid var(--neutral); position: relative; }
+    .urgencia-card.muito_urgente { border-left-color: var(--danger); }
+    .urgencia-card.urgente { border-left-color: var(--warning); }
+    .urgencia-card.resolvido { border-left-color: var(--success); opacity: 0.85; }
+    .urgencia-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+    .urgencia-badges { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .badge-muito-urgente { background: #fee2e2; color: #dc2626; }
+    .badge-urgente { background: #fef9c3; color: #a16207; }
+    .badge-pendente { background: #fee2e2; color: #dc2626; }
+    .badge-em-curso { background: #fef9c3; color: #a16207; }
+    .badge-resolvido { background: #dcfce7; color: #15803d; }
+    .urgencia-meta { font-size: 12px; color: var(--text-muted); }
+    .urgencia-desc { font-size: 14px; color: var(--text); margin-top: 6px; }
+    .urgencia-location { font-size: 13px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
+    .urgencia-status-select { padding: 5px 10px; border: 2px solid var(--border); border-radius: 8px; font-size: 13px; font-weight: 600; outline: none; cursor: pointer; }
+    .tab-badge { background: var(--danger); color: white; border-radius: 10px; padding: 1px 7px; font-size: 11px; font-weight: 700; margin-left: 2px; display: inline-block; vertical-align: middle; }
+    .nav-btn .tab-badge { margin-left: 4px; }
+
+    /* ===== TABS ===== */
+    .tab-row { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ===== ADMIN SECTIONS ===== */
+    .admin-section { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .admin-section-header { background: #f8fafc; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border); }
+    .admin-section-header h3 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0; }
+    .admin-section-body { padding: 20px; background: white; }
+    .admin-section-body.collapsed { display: none; }
+    .collapse-arrow { font-size: 12px; color: var(--text-muted); transition: transform 0.2s; }
+    .collapse-arrow.open { transform: rotate(180deg); }
+
+    /* ===== MOVE STREET ===== */
+    .btn-move-street { background: none; border: 1px solid var(--border); cursor: pointer; font-size: 12px; color: var(--secondary); padding: 2px 8px; border-radius: 4px; transition: background 0.15s; margin-right: 4px; }
+    .btn-move-street:hover { background: #dbeafe; }
+    .move-street-select { font-size: 12px; padding: 2px 6px; border: 1px solid var(--border); border-radius: 4px; outline: none; margin-right: 4px; }
+    .btn-move-confirm { background: var(--secondary); border: none; cursor: pointer; font-size: 12px; color: white; padding: 2px 8px; border-radius: 4px; }
+    .street-move-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+
+    /* ===== ZONE EDIT ===== */
+    .zone-name-edit { font-size: 14px; font-weight: 700; border: 2px solid var(--primary); border-radius: 6px; padding: 2px 8px; outline: none; width: 200px; }
+    .btn-icon { background: none; border: none; cursor: pointer; font-size: 14px; padding: 3px 5px; border-radius: 4px; transition: background 0.15s; }
+    .btn-icon:hover { background: var(--border); }
+    .zone-char-panel { background: #f8fafc; border-radius: 8px; padding: 14px; margin-top: 10px; border: 1px solid var(--border); }
+    .zone-char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .zone-char-grid .form-group { margin-bottom: 0; }
+    .zone-char-grid label { font-size: 11px; }
+
+    /* ===== SCHEDULE EDITOR ===== */
+    .schedule-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .schedule-table th { background: var(--primary); color: white; padding: 10px 14px; text-align: left; font-weight: 700; font-size: 12px; }
+    .schedule-table td { padding: 10px 14px; border: 1px solid var(--border); vertical-align: top; }
+    .schedule-table tr:nth-child(even) td { background: #f8fafc; }
+    .sched-chip { display: inline-flex; align-items: center; gap: 4px; background: #e8f5e9; color: #1b5e20; border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 700; margin: 2px; }
+    .sched-chip.team-b { background: #dbeafe; color: #1d4ed8; }
+    .sched-chip.team-c { background: #fce7f3; color: #be185d; }
+    .sched-chip-x { background: none; border: none; cursor: pointer; font-size: 12px; color: inherit; opacity: 0.7; padding: 0; line-height: 1; }
+    .sched-chip-x:hover { opacity: 1; }
+    .btn-add-sched { background: none; border: 1px dashed var(--border); cursor: pointer; font-size: 12px; color: var(--text-muted); padding: 3px 8px; border-radius: 6px; margin: 2px; transition: all 0.15s; }
+    .btn-add-sched:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ===== RECORD EDIT MODAL ===== */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .modal-box { background: white; border-radius: 16px; padding: 28px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-header h2 { font-size: 18px; font-weight: 800; }
+    .btn-close-modal { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 6px; }
+    .btn-close-modal:hover { background: var(--border); }
+    .edited-label { font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
+
+    /* ===== URGENCIAS FILTERS ===== */
+    .urg-filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+    .urg-filter-btn { padding: 8px 16px; border: 2px solid var(--border); border-radius: 20px; background: white; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .urg-filter-btn.active { border-color: var(--primary); color: var(--primary); background: #f0fdf4; }
+    .urg-count-badge { background: var(--border); color: var(--text-muted); border-radius: 10px; padding: 1px 7px; font-size: 11px; font-weight: 700; }
+    .urg-filter-btn.active .urg-count-badge { background: var(--primary); color: white; }
+    .urg-stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .urg-stat-card { flex: 1; min-width: 100px; background: white; border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow); text-align: center; }
+    .urg-stat-val { font-size: 26px; font-weight: 800; line-height: 1; }
+    .urg-stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ===== SAVE INDICATOR ===== */
+    #save-indicator { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 600; box-shadow: var(--shadow-md); z-index: 500; display: none; transition: opacity 0.3s; }
+
+    /* ===== IMPORT PREVIEW ===== */
+    .import-preview { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-top: 12px; font-size: 14px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div id="app-loading" style="position:fixed;inset:0;background:#f8fafc;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="font-size:48px;">🧹</div>
+  <div style="font-size:18px;font-weight:700;color:#2c6e49;">Plano de Limpeza — Minde</div>
+  <div style="font-size:14px;color:#64748b;">A carregar dados do servidor...</div>
+  <div id="loading-error" style="display:none;background:#fee2e2;color:#b91c1c;border-radius:8px;padding:12px 20px;max-width:420px;text-align:center;font-size:13px;"></div>
+</div>
+
+<div id="server-banner" style="display:none;background:#fef3c7;border-bottom:2px solid #f59e0b;padding:10px 20px;font-size:13px;text-align:center;position:sticky;top:0;z-index:100;">
+  ⚠️ <strong>Servidor não encontrado.</strong> Os dados não estão a ser guardados permanentemente. <a href="#" onclick="location.reload()" style="color:#92400e;font-weight:700;">Tentar novamente</a>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="emoji">🧹</span>
+      <h1>Sistema de Limpeza</h1>
+      <p>Freguesia de Minde — Alcanena</p>
+    </div>
+    <div class="login-form">
+      <div class="form-group">
+        <label>Equipa</label>
+        <select id="login-team">
+          <option value="">Selecionar equipa...</option>
+          <option value="A">Equipa A</option>
+          <option value="B">Equipa B</option>
+          <option value="C">Equipa C</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Palavra-passe</label>
+        <input type="password" id="login-password" placeholder="Introduzir palavra-passe" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn-login" onclick="doLogin()">Entrar</button>
+      <div class="login-error" id="login-error">Palavra-passe incorreta. Tente novamente.</div>
+      <div class="login-hint">
+        <strong>Credenciais de acesso:</strong><br>
+        Equipa A/B/C: <code>equipaA2024</code> / <code>equipaB2024</code> / <code>equipaC2024</code><br>
+        Admin: <code>admin2024</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <header class="header">
+    <div class="header-left">
+      <span style="font-size:22px;">🧹</span>
+      <div>
+        <div class="header-logo">Limpeza Minde</div>
+        <div class="header-sub">Gestão de Equipas</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="team-badge" id="team-badge">—</span>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </header>
+  <div id="save-indicator">💾 Guardado</div>
+
+  <nav class="nav">
+    <button class="nav-btn active" data-section="dashboard" onclick="showSection('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" data-section="new-record" onclick="showSection('new-record')">➕ Novo Registo</button>
+    <button class="nav-btn" data-section="history" onclick="showSection('history')">📋 Histórico</button>
+    <button class="nav-btn" data-section="plan" onclick="showSection('plan')">🗺️ Plano de Zonas</button>
+    <button class="nav-btn" data-section="calendar" onclick="showSection('calendar')">📅 Calendário</button>
+    <button class="nav-btn" data-section="reports" onclick="showSection('reports')">📈 Relatórios</button>
+    <button class="nav-btn" data-section="urgencias" onclick="showSection('urgencias')" id="nav-urgencias">🚨 Urgências<span class="tab-badge" id="urgencias-badge" style="display:none;">0</span></button>
+    <button class="nav-btn" data-section="admin" onclick="showSection('admin')" id="nav-admin" style="display:none;">⚙️ Admin</button>
+  </nav>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div class="section active" id="dashboard">
+    <div class="page-title">Dashboard</div>
+    <div class="page-sub">Visão geral do estado de limpeza da Freguesia de Minde</div>
+
+    <div class="grid-4" id="dash-stats" style="margin-bottom:24px;"></div>
+
+    <div class="card">
+      <div class="card-title">🗺️ Estado das 20 Zonas</div>
+      <div class="zone-grid" id="dash-zones"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📝 Últimos Registos</div>
+      <div id="dash-recent"></div>
+    </div>
+  </div>
+
+  <!-- ===== NEW RECORD ===== -->
+  <div class="section" id="new-record">
+    <div class="page-title">Novo Registo de Trabalho</div>
+    <div class="page-sub">Registe a limpeza realizada pela sua equipa hoje</div>
+
+    <div class="card" id="record-form-card">
+      <div id="record-alert" style="display:none;"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" id="r-date">
+        </div>
+        <div class="form-group">
+          <label>Equipa</label>
+          <select id="r-team">
+            <option value="A">Equipa A</option>
+            <option value="B">Equipa B</option>
+            <option value="C">Equipa C</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Zona trabalhada</label>
+          <select id="r-zone" onchange="updateStreetsList()">
+            <option value="">Selecionar zona...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Horas trabalhadas</label>
+          <input type="number" id="r-hours" min="0.5" max="12" step="0.5" placeholder="Ex: 6">
+        </div>
+        <div class="form-group full">
+          <label>Ruas concluídas (selecione todas as que foram limpas)</label>
+          <div class="streets-container" id="streets-list">
+            <span style="color:var(--text-muted);font-size:13px;">Selecione primeiro uma zona</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>Observações / Ocorrências</label>
+          <textarea id="r-obs" placeholder="Ex: Zona muito suja junto ao largo. Encontrou resíduos de construção. Rua do Castelo necessita de limpeza urgente na semana seguinte..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Fotografias (opcional)</label>
+          <div class="photo-upload-area" onclick="document.getElementById('r-photos').click()">
+            <div class="icon">📷</div>
+            <p>Clique para adicionar fotos ou arraste para aqui</p>
+            <p style="font-size:12px;margin-top:4px;">JPG, PNG — máx. 5 fotos</p>
+          </div>
+          <input type="file" id="r-photos" accept="image/*" multiple style="display:none" onchange="handlePhotos(this)">
+          <div class="photo-preview" id="photo-preview"></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="submitRecord()">💾 Guardar Registo</button>
+        <button class="btn btn-secondary" onclick="clearForm()">🗑️ Limpar Formulário</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HISTORY ===== -->
+  <div class="section" id="history">
+    <div class="page-title">Histórico de Registos</div>
+    <div class="page-sub">Consulte todos os trabalhos registados</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Equipa</label>
+        <select id="f-team" onchange="renderHistory()">
+          <option value="">Todas</option>
+          <option value="A">Equipa A</option>
+          <option value="B">Equipa B</option>
+          <option value="C">Equipa C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Zona</label>
+        <select id="f-zone" onchange="renderHistory()">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Data inicial</label>
+        <input type="date" id="f-date-from" onchange="renderHistory()">
+      </div>
+      <div class="filter-group">
+        <label>Data final</label>
+        <input type="date" id="f-date-to" onchange="renderHistory()">
+      </div>
+      <button class="btn btn-secondary" onclick="clearFilters()" style="padding:8px 14px;font-size:13px;">✕ Limpar</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Equipa</th>
+              <th>Zona</th>
+              <th>Horas</th>
+              <th>Obs.</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+      <div id="history-empty" class="empty-state" style="display:none;">
+        <div class="icon">📋</div>
+        <p>Nenhum registo encontrado com os filtros aplicados.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PLAN ===== -->
+  <div class="section" id="plan">
+    <div class="page-title">Plano de Zonas — 20 Zonas Geográficas</div>
+    <div class="page-sub">Descrição completa de cada zona, ruas incluídas, densidade e frequência de limpeza</div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchPlanTab('all')">Todas (20)</button>
+      <button class="tab-btn" onclick="switchPlanTab('minde')">Minde (13)</button>
+      <button class="tab-btn" onclick="switchPlanTab('covao')">Covão do Coelho (4)</button>
+      <button class="tab-btn" onclick="switchPlanTab('vale')">Vale Alto (3)</button>
+    </div>
+
+    <div id="plan-zones"></div>
+  </div>
+
+  <!-- ===== CALENDAR ===== -->
+  <div class="section" id="calendar">
+    <div class="page-title">Calendário Anual de Rotação</div>
+    <div class="page-sub">Atribuição de zonas por equipa e por mês — ciclo anual 2024/2025</div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title">📌 Legenda</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:13px;">
+        <span><span class="cal-zone hd">Z01</span> Alta densidade — limpeza de 2 em 2 meses</span>
+        <span><span class="cal-zone ld">Z06</span> Baixa/Média densidade — limpeza de 6 em 6 meses</span>
+        <span style="color:var(--text-muted);font-style:italic;">Mês tampão — sem agendamento fixo (margem para atrasos)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table class="calendar-table">
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>🟢 Equipa A</th>
+              <th>🔵 Equipa B</th>
+              <th>🔴 Equipa C</th>
+              <th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody id="calendar-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⏱️ Estimativa de Carga por Mês</div>
+      <div style="font-size:14px;color:var(--text-muted);line-height:1.8;">
+        <p>• <strong>Dias de trabalho:</strong> 4 a 5 dias úteis por semana (20–22 dias/mês por equipa)</p>
+        <p>• <strong>Jornada:</strong> 7 horas de trabalho efetivo por dia (8h–16h com pausa para almoço)</p>
+        <p>• <strong>Zona de alta densidade:</strong> 2 a 3 dias de limpeza por equipa (14–21h)</p>
+        <p>• <strong>Zona de baixa/média densidade:</strong> 1 a 2 dias de limpeza (7–14h)</p>
+        <p>• <strong>Buffer:</strong> Junho e Dezembro são meses livres para recuperar atrasos ou apoio extra</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== REPORTS ===== -->
+  <div class="section" id="reports">
+    <div class="page-title">Relatórios</div>
+    <div class="page-sub">Exportação de dados e análise de cumprimento do plano</div>
+
+    <div class="export-btn-row">
+      <button class="btn btn-success" onclick="exportCSV()">📊 Exportar para Excel (CSV)</button>
+      <button class="btn btn-secondary" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">✅ Cumprimento por Zona</div>
+        <div id="report-compliance"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">👥 Atividade por Equipa</div>
+        <div id="report-teams"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Resumo Geral</div>
+      <div id="report-summary"></div>
+    </div>
+  </div>
+
+  <!-- ===== URGÊNCIAS ===== -->
+  <div class="section" id="urgencias">
+    <div class="page-title">🚨 Urgências</div>
+    <div class="page-sub">Reporte situações urgentes e consulte ocorrências em curso</div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchUrgenciasTab('report')" id="utab-report">📝 Reportar</button>
+      <button class="tab-btn" onclick="switchUrgenciasTab('list')" id="utab-list">📋 Ocorrências</button>
+    </div>
+
+    <!-- Report form -->
+    <div id="urgencias-report-panel" class="tab-content active">
+      <div class="card">
+        <div id="urgencia-form-alert" style="display:none;"></div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Data e Hora</label>
+            <input type="datetime-local" id="urg-datetime">
+          </div>
+          <div class="form-group">
+            <label>Equipa</label>
+            <select id="urg-team">
+              <option value="A">Equipa A</option>
+              <option value="B">Equipa B</option>
+              <option value="C">Equipa C</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Zona</label>
+            <select id="urg-zone">
+              <option value="">Selecionar zona...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Situação</label>
+            <select id="urg-type">
+              <option value="Lixo acumulado">Lixo acumulado</option>
+              <option value="Despejo ilegal">Despejo ilegal</option>
+              <option value="Perigo/Obstáculo">Perigo/Obstáculo</option>
+              <option value="Entulho">Entulho</option>
+              <option value="Animais mortos">Animais mortos</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Localização (descrição)</label>
+            <input type="text" id="urg-location" placeholder="Ex: Junto ao n.º 12 da Rua da Igreja">
+          </div>
+          <div class="form-group">
+            <label>Prioridade</label>
+            <select id="urg-priority">
+              <option value="urgente">Urgente</option>
+              <option value="muito_urgente">Muito Urgente</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Descrição</label>
+            <textarea id="urg-desc" placeholder="Descreva a situação com o máximo de detalhe possível..."></textarea>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-danger" onclick="submitUrgencia()">🚨 Submeter Urgência</button>
+          <button class="btn btn-secondary" onclick="clearUrgenciaForm()">🗑️ Limpar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- List panel -->
+    <div id="urgencias-list-panel" class="tab-content">
+      <div class="urg-stats-row" id="urg-stats-row"></div>
+      <div class="urg-filter-bar" id="urg-filter-bar">
+        <button class="urg-filter-btn active" onclick="setUrgFilter('todas')" id="urg-fbtn-todas">Todas <span class="urg-count-badge" id="urg-cnt-todas">0</span></button>
+        <button class="urg-filter-btn" onclick="setUrgFilter('pendente')" id="urg-fbtn-pendente">🔴 Pendente <span class="urg-count-badge" id="urg-cnt-pendente">0</span></button>
+        <button class="urg-filter-btn" onclick="setUrgFilter('em_curso')" id="urg-fbtn-em_curso">🟠 Em Curso <span class="urg-count-badge" id="urg-cnt-em_curso">0</span></button>
+        <button class="urg-filter-btn" onclick="setUrgFilter('resolvido')" id="urg-fbtn-resolvido">🟢 Resolvido <span class="urg-count-badge" id="urg-cnt-resolvido">0</span></button>
+      </div>
+      <div id="urgencias-list-container"></div>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN ===== -->
+  <div class="section" id="admin">
+    <div class="page-title">⚙️ Administração</div>
+    <div class="page-sub">Ferramentas de gestão avançada — apenas para administradores</div>
+
+    <!-- 1. Gerir Ruas -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection('admin-streets-body','arrow-streets')">
+        <h3>🗂️ Gerir Ruas</h3>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation();resetZonesOverride()">↩️ Repor Padrão</button>
+          <span class="collapse-arrow open" id="arrow-streets">▼</span>
+        </div>
+      </div>
+      <div class="admin-section-body" id="admin-streets-body">
+        <div id="admin-streets-container"></div>
+      </div>
+    </div>
+
+    <!-- 2. Editar Zonas -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection('admin-zones-body','arrow-zones')">
+        <h3>🏷️ Editar Zonas</h3>
+        <span class="collapse-arrow" id="arrow-zones">▼</span>
+      </div>
+      <div class="admin-section-body collapsed" id="admin-zones-body">
+        <div id="admin-zones-container"></div>
+      </div>
+    </div>
+
+    <!-- 3. Plano de Equipas -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection('admin-sched-body','arrow-sched')">
+        <h3>👥 Plano de Equipas</h3>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="btn btn-secondary" style="font-size:12px;padding:6px 12px;" onclick="event.stopPropagation();resetScheduleOverride()">↩️ Repor Calendário Original</button>
+          <span class="collapse-arrow" id="arrow-sched">▼</span>
+        </div>
+      </div>
+      <div class="admin-section-body collapsed" id="admin-sched-body">
+        <div id="admin-schedule-container"></div>
+      </div>
+    </div>
+
+    <!-- 4. Dados e Backup -->
+    <div class="admin-section">
+      <div class="admin-section-header" onclick="toggleAdminSection('admin-backup-body','arrow-backup')">
+        <h3>💾 Dados e Backup</h3>
+        <span class="collapse-arrow" id="arrow-backup">▼</span>
+      </div>
+      <div class="admin-section-body collapsed" id="admin-backup-body">
+        <div class="btn-row" style="margin-bottom:16px;">
+          <button class="btn btn-success" onclick="exportAllData()">⬇️ Exportar todos os dados (JSON)</button>
+          <label class="btn btn-secondary" style="cursor:pointer;">
+            ⬆️ Importar backup (JSON)
+            <input type="file" accept=".json" id="import-file-input" style="display:none" onchange="handleImportFile(this)">
+          </label>
+        </div>
+        <div id="import-preview-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RECORD EDIT MODAL ===== -->
+  <div class="modal-overlay" id="edit-record-modal" style="display:none;" onclick="if(event.target===this)closeEditModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>✏️ Editar Registo</h2>
+        <button class="btn-close-modal" onclick="closeEditModal()">✕</button>
+      </div>
+      <div id="edit-record-alert" style="display:none;margin-bottom:12px;"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" id="edit-r-date">
+        </div>
+        <div class="form-group">
+          <label>Equipa</label>
+          <select id="edit-r-team">
+            <option value="A">Equipa A</option>
+            <option value="B">Equipa B</option>
+            <option value="C">Equipa C</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Zona trabalhada</label>
+          <select id="edit-r-zone" onchange="updateEditStreetsList()">
+            <option value="">Selecionar zona...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Horas trabalhadas</label>
+          <input type="number" id="edit-r-hours" min="0.5" max="12" step="0.5">
+        </div>
+        <div class="form-group full">
+          <label>Ruas concluídas</label>
+          <div class="streets-container" id="edit-streets-list"></div>
+        </div>
+        <div class="form-group full">
+          <label>Observações / Ocorrências</label>
+          <textarea id="edit-r-obs"></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Fotografias actuais</label>
+          <div class="photo-preview" id="edit-photo-preview"></div>
+          <div style="margin-top:8px;">
+            <label class="btn btn-secondary" style="cursor:pointer;font-size:13px;">
+              📷 Substituir fotos
+              <input type="file" id="edit-r-photos" accept="image/*" multiple style="display:none" onchange="handleEditPhotos(this)">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn btn-primary" onclick="saveEditedRecord()">💾 Guardar alterações</button>
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== URGENCIA EDIT MODAL ===== -->
+  <div class="modal-overlay" id="edit-urgencia-modal" style="display:none;" onclick="if(event.target===this)closeEditUrgenciaModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>✏️ Editar Urgência</h2>
+        <button class="btn-close-modal" onclick="closeEditUrgenciaModal()">✕</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Tipo de Situação</label>
+          <select id="edit-urg-type">
+            <option value="Lixo acumulado">Lixo acumulado</option>
+            <option value="Despejo ilegal">Despejo ilegal</option>
+            <option value="Perigo/Obstáculo">Perigo/Obstáculo</option>
+            <option value="Entulho">Entulho</option>
+            <option value="Animais mortos">Animais mortos</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioridade</label>
+          <select id="edit-urg-priority">
+            <option value="urgente">Urgente</option>
+            <option value="muito_urgente">Muito Urgente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="edit-urg-status">
+            <option value="pendente">Pendente</option>
+            <option value="em_curso">Em Curso</option>
+            <option value="resolvido">Resolvido</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Localização</label>
+          <input type="text" id="edit-urg-location">
+        </div>
+        <div class="form-group full">
+          <label>Descrição</label>
+          <textarea id="edit-urg-desc"></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveEditedUrgencia()">💾 Guardar alterações</button>
+        <button class="btn btn-secondary" onclick="closeEditUrgenciaModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DADOS — 20 ZONAS GEOGRÁFICAS
+// ============================================================
+const TEAMS_DATA = {
+  A: { name: 'Equipa A', password: 'equipaA2024', color: '#2c6e49', emoji: '🟢' },
+  B: { name: 'Equipa B', password: 'equipaB2024', color: '#3b82f6', emoji: '🔵' },
+  C: { name: 'Equipa C', password: 'equipaC2024', color: '#e11d48', emoji: '🔴' },
+  admin: { name: 'Administrador', password: 'admin2024', color: '#6b7280', emoji: '⚙️' }
+};
+
+const ZONES = [
+  // ===== MINDE — ruas verificadas via OpenStreetMap =====
+  {
+    id: 1, code: 'Z01', name: 'Centro Histórico / Igreja', locality: 'Minde',
+    description: 'Núcleo histórico norte da vila com a Igreja Matriz, o Cruzeiro e o Painel das Almas. Ruas sinuosas de alta densidade pedonal.',
+    streets: ['Rua da Igreja', 'Largo da Igreja', 'Travessa da Igreja', 'Largo Justino Pires', 'Rua Padre Querido', 'Rua do Cruzeiro', 'Rua do Painel das Almas'],
+    density: 'Alta', frequency: 2, effort: 'Alta', team: 'C'
+  },
+  {
+    id: 2, code: 'Z02', name: 'Centro Histórico / Praça Alberto Guedes', locality: 'Minde',
+    description: 'Praça Alberto Guedes e arruamentos adjacentes. Praça 14 de Agosto, zona de passagem e encontro central da vila.',
+    streets: ['Praça Alberto Guedes', 'Praça 14 de Agosto', 'Rua do Remexido', 'Beco de Rosa', 'Rua da Sana', 'Rua do Felgar', 'Travessa do Neto'],
+    density: 'Alta', frequency: 2, effort: 'Alta', team: 'C'
+  },
+  {
+    id: 3, code: 'Z03', name: 'Zona Comercial / Largo do Mercado', locality: 'Minde',
+    description: 'Coração comercial com o Largo do Mercado, a Avenida José António de Carvalho e os principais estabelecimentos. Maior produção de resíduos da vila.',
+    streets: ['Largo do Mercado', 'Rua do Mercado', 'Avenida José António de Carvalho', 'Largo Justino Guedes', 'Rua Jornal de Minde', 'Rua da Sociedade Musical Mindense'],
+    density: 'Alta', frequency: 2, effort: 'Alta', team: 'C'
+  },
+  {
+    id: 4, code: 'Z04', name: 'Bairro Têxtil / Tecedeiras', locality: 'Minde',
+    description: 'Zona da tradição têxtil de Minde. Rua das Tecedeiras, Travessa dos Cardadores — nomes que refletem a atividade histórica da vila das coberturas.',
+    streets: ['Rua das Tecedeiras', 'Travessa dos Cardadores', 'Rua Marques de Carvalho', 'Rua Lorenço Coelho', 'Rua Capitão Meira', 'Rua Cândido Alves Fiel', 'Rua do Cerco'],
+    density: 'Alta', frequency: 2, effort: 'Alta', team: 'A'
+  },
+  {
+    id: 5, code: 'Z05', name: 'Bairro Roque Gameiro / Alegrim', locality: 'Minde',
+    description: 'Arruamentos residenciais com nomes de figuras ilustres de Minde. Inclui as ruas dos Roque Gameiro e a Rua do Alegrim.',
+    streets: ['Rua Alfredo Roque Gameiro', 'Rua António Roque Gameiro', 'Rua Miguel Coelho dos Reis', 'Rua Francisco Manha', 'Rua do Alegrim'],
+    density: 'Alta', frequency: 2, effort: 'Alta', team: 'A'
+  },
+  {
+    id: 6, code: 'Z06', name: 'Bairro do Carro Velho / Escolas Novas', locality: 'Minde',
+    description: 'Expansão urbana mais recente. Alameda e Bairro do Carro Velho, Rua Calouste Gulbenkian e as Escolas Novas. Habitação menos densa.',
+    streets: ['Alameda do Carro Velho', 'Bairro do Carro Velho', 'Rua das Escolas Novas', 'Rua Calouste Gulbenkian', 'Rua Cabeço da Barreira'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'A'
+  },
+  {
+    id: 7, code: 'Z07', name: 'Zona dos Bombeiros / Eclesiástica', locality: 'Minde',
+    description: 'Largo dos Bombeiros e ruas de nomes eclesiásticos. Tráfego elevado ao fim de semana. Inclui a Associação dos Bombeiros Voluntários.',
+    streets: ['Largo dos Bombeiros', 'Rua da Associação dos Bombeiros Voluntários', 'Rua Frei Silvestre', 'Rua Monsenhor Michel', 'Rua Cónego Feliciano da Assunção', 'Rua Jaime Chavinha', 'Rua da Vitória'],
+    density: 'Alta', frequency: 2, effort: 'Média', team: 'C'
+  },
+  {
+    id: 8, code: 'Z08', name: 'Zona dos Penedos / Serra de Aire', locality: 'Minde',
+    description: 'Arruamentos com referências à paisagem natural. Rua Serra de Aire, Rua dos Penedos. Habitação dispersa a este da vila.',
+    streets: ['Rua Serra de Aire', 'Rua dos Penedos', 'Travessa dos Penedos', 'Rua do Outeiro', 'Rua das Cruzinhas', 'Estrada do Peregrino'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'B'
+  },
+  {
+    id: 9, code: 'Z09', name: 'Zona da Paz / Nossa Senhora', locality: 'Minde',
+    description: 'Bairro residencial com ruas de devoção religiosa. Rua da Paz, Rua de Santo António, Rua de São Bento, Rua Nossa Senhora de Fátima.',
+    streets: ['Rua da Paz', 'Rua de Santo António', 'Rua de São Bento', 'Rua Nossa Senhora de Fátima', 'Rua Nossa Senhora do Cerejal'],
+    density: 'Média', frequency: 2, effort: 'Média', team: 'A'
+  },
+  {
+    id: 10, code: 'Z10', name: 'Zona dos Doutores / Sul', locality: 'Minde',
+    description: 'Arruamentos sul com nomes de figuras académicas ilustres. Rua Doutor Totta, Rua Doutor João Higino, Rua Professor Costa Ferreira.',
+    streets: ['Rua Doutor António da Silva Ferreira Totta', 'Rua Doutor João Higino', 'Rua Professor Costa Ferreira', 'Rua do Depósito', 'Avenida das Cabecinas'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'A'
+  },
+  {
+    id: 11, code: 'Z11', name: 'Zona dos Loureiros / Lagar Calé', locality: 'Minde',
+    description: 'Arruamentos oeste com o Lagar Calé e a Rua dos Loureiros. Zona tranquila com vegetação densa entre habitações.',
+    streets: ['Rua dos Loureiros', 'Rua Lagar Calé', 'Travessa da Freira', 'Travessa do Beringeis'],
+    density: 'Baixa', frequency: 6, effort: 'Média', team: 'B'
+  },
+  {
+    id: 12, code: 'Z12', name: 'Periferia Norte / Avenida São Sebastião', locality: 'Minde',
+    description: 'Zona norte com a Avenida de São Sebastião, Rua de Santana e arruamentos periféricos. Habitação mais dispersa com residentes permanentes.',
+    streets: ['Avenida de São Sebastião', 'Rua de Santana', 'Rua do Sol Posto', 'Rua Padre Paulo', 'Rua Doutor Ernesto Teixeira Guedes'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'B'
+  },
+  {
+    id: 13, code: 'Z13', name: 'Periferia Sul / Largo das Eiras', locality: 'Minde',
+    description: 'Zona sul com o Largo das Eiras, ruas de figuras históricas e o Trilho do Russo. Transição para Vale Alto.',
+    streets: ['Largo das Eiras', 'Rua das Escolas', 'Rua de Emídio da Silva Raposo', 'Rua de Nuno Álvares Ferreira', 'Rua Maestro José da Silva Júnior', 'Rua Capitão Salgueiro Maia', 'Rua João Martins', 'Rua Maria José Borges', 'Trilho do Russo'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'A'
+  },
+  // ===== COVÃO DO COELHO — ruas verificadas via Google Maps (maio 2025) =====
+  {
+    id: 14, code: 'Z14', name: 'Covão do Coelho — Centro / Igreja', locality: 'Covão do Coelho',
+    description: 'Núcleo central da aldeia em torno da Igreja e da Fonte do Largo. Maior concentração habitacional. Inclui as ruas comerciais principais com a Taberna da Jaquina e o Café Ideal.',
+    streets: ['Rua da Igreja', 'Rua das Quintas', 'Rua do Nicho', 'Rua do Matadouro', 'Rua da Escola', 'Travessa da Escola', 'Rua de Timor', 'Rua da Portela', 'Rua Vila de Alcanena', 'Rua da Padaria', 'Rua das Eiras'],
+    density: 'Alta', frequency: 2, effort: 'Alta', team: 'B'
+  },
+  {
+    id: 15, code: 'Z15', name: 'Covão do Coelho — Zona da Lomba', locality: 'Covão do Coelho',
+    description: 'Zona sul da aldeia em torno da Lomba. Inclui a Rua da Lomba (residentes confirmados), Encosta da Lomba, Sítio da Lomba e Rua das Lombinhas. Zona de expansão recente.',
+    streets: ['Rua da Lomba', 'Rua Encosta da Lomba', 'Rua Sítio da Lomba', 'Rua das Lombinhas', 'Rua da Madruga'],
+    density: 'Média', frequency: 6, effort: 'Média', team: 'B'
+  },
+  {
+    id: 16, code: 'Z16', name: 'Covão do Coelho — Eira Velha / Norte', locality: 'Covão do Coelho',
+    description: 'Zona norte com as ruas da Eira Velha. Habitação mais dispersa com acessos estreitos. Inclui o Palomino Bar como referência local.',
+    streets: ['Rua da Eira Velha', 'Rua Chão das Pias', 'Rua do Meio', 'Rua das Flores', 'Rua da Escola Velha', 'Rua Pia do Luzia', 'Rua da Ladeira', 'Rua da Cabine'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'B'
+  },
+  {
+    id: 17, code: 'Z17', name: 'Covão do Coelho — Periferia / Cemitério', locality: 'Covão do Coelho',
+    description: 'Periferia leste e sul da aldeia. Zona dos países lusófonos, cemitério e arruamentos mais rurais com habitações permanentes identificadas.',
+    streets: ['Rua de Angola', 'Rua de Moçambique', 'Rua da Lagoinha', 'Rua da Trapa', 'Rua do Cemitério'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'B'
+  },
+  // ===== VALE ALTO — ruas verificadas via Google Maps (maio 2025) =====
+  {
+    id: 18, code: 'Z18', name: 'Vale Alto — Centro / Igreja', locality: 'Vale Alto',
+    description: 'Núcleo central de Vale Alto em torno da Igreja do Vale Alto e do Restaurante Simões. Zona de maior densidade da aldeia com as ruas principais.',
+    streets: ['Rua da Igreja', 'Rua da Escola', 'Travessa da Escola', 'Rua Nossa Sra. da Guia', 'Rua do Canto', 'Rua Serra de Aire'],
+    density: 'Alta', frequency: 2, effort: 'Média', team: 'A'
+  },
+  {
+    id: 19, code: 'Z19', name: 'Vale Alto — Norte / Pedreiras', locality: 'Vale Alto',
+    description: 'Zona norte da aldeia com a Rua das Pedreiras, Rua da Floresta e Rua Micoso Mico. Habitação mais dispersa com acessos mais estreitos.',
+    streets: ['Rua das Pedreiras', 'Rua da Floresta', 'Rua Micoso Mico', 'Rua da Fraguinha', 'Rua da Fareta'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'A'
+  },
+  {
+    id: 20, code: 'Z20', name: 'Vale Alto — Sul / Moinhos', locality: 'Vale Alto',
+    description: 'Zona sul e periferia de Vale Alto com as ruas dos Moinhos, das Ladeiras e das Chousas. Habitação mais dispersa em direção à saída da aldeia.',
+    streets: ['Rua das Eiras', 'Rua dos Moinhos', 'Rua das Ladeiras', 'Rua das Chousas'],
+    density: 'Baixa', frequency: 6, effort: 'Baixa', team: 'B'
+  }
+];
+
+// Calendário de rotação anual
+const SCHEDULE = [
+  { month: 1,  label: 'Janeiro',    A: [4,5,9,18],    B: [14,8],         C: [1,2,3,7],    type: 'normal' },
+  { month: 2,  label: 'Fevereiro',  A: [6,10],         B: [11,15],        C: [],            type: 'light' },
+  { month: 3,  label: 'Março',      A: [4,5,9,18],    B: [14,12],        C: [1,2,3,7],    type: 'normal' },
+  { month: 4,  label: 'Abril',      A: [13,19],        B: [16,17,20],     C: [],            type: 'light' },
+  { month: 5,  label: 'Maio',       A: [4,5,9,18],    B: [14],           C: [1,2,3,7],    type: 'high' },
+  { month: 6,  label: 'Junho',      A: [],             B: [],             C: [],            type: 'buffer' },
+  { month: 7,  label: 'Julho',      A: [4,5,9,18],    B: [14,8],         C: [1,2,3,7],    type: 'normal' },
+  { month: 8,  label: 'Agosto',     A: [6,10],         B: [11,15],        C: [],            type: 'light' },
+  { month: 9,  label: 'Setembro',   A: [4,5,9,18],    B: [14,12],        C: [1,2,3,7],    type: 'normal' },
+  { month: 10, label: 'Outubro',    A: [13,19],        B: [16,17,20],     C: [],            type: 'light' },
+  { month: 11, label: 'Novembro',   A: [4,5,9,18],    B: [14],           C: [1,2,3,7],    type: 'normal' },
+  { month: 12, label: 'Dezembro',   A: [],             B: [],             C: [],            type: 'buffer' },
+];
+
+// ============================================================
+// ESTADO & ARMAZENAMENTO
+// ============================================================
+let currentTeam = null;
+let currentSection = 'dashboard';
+let uploadedPhotos = [];
+let currentPlanFilter = 'all';
+
+// ============================================================
+// SUPABASE — CLIENTE + CACHE EM MEMÓRIA
+// ============================================================
+const SUPABASE_URL = 'https://iveutdmlyqbbbvgfosea.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2ZXV0ZG1seXFiYmJ2Z2Zvc2VhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Mjc4NDcsImV4cCI6MjA5NDEwMzg0N30.8mqB-ZBBzg7MjriLJI3ZG7Cx0nZ2BD3DdWHco33RJbE';
+const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const DB = { records: [], urgencias: [], zonesOverride: {}, scheduleOverride: {} };
+let serverAvailable = false;
+
+// Conversor: linha da BD → objeto JS (registos)
+function mapRecord(r) {
+  return {
+    ...r,
+    zone: r.zone_id,
+    streetsCompleted: typeof r.streets_completed === 'string'
+      ? JSON.parse(r.streets_completed || '[]') : (r.streets_completed || []),
+    photos: typeof r.photos === 'string'
+      ? JSON.parse(r.photos || '[]') : (r.photos || []),
+  };
+}
+
+// Conversor: linha da BD → objeto JS (urgências)
+function mapUrgencia(u) {
+  return { ...u, zoneId: u.zone_id, createdAt: u.created_at };
+}
+
+async function initDB() {
+  try {
+    const [recRes, urgRes, cfgRes] = await Promise.all([
+      _sb.from('records').select('*').order('created_at', { ascending: false }),
+      _sb.from('urgencias').select('*').order('created_at', { ascending: false }),
+      _sb.from('config').select('*'),
+    ]);
+    if (recRes.error) throw recRes.error;
+    if (urgRes.error) throw urgRes.error;
+
+    DB.records   = (recRes.data || []).map(mapRecord);
+    DB.urgencias = (urgRes.data || []).map(mapUrgencia);
+
+    const cfgRows = cfgRes.data || [];
+    const zoRow   = cfgRows.find(r => r.key === 'zonesOverride');
+    const scRow   = cfgRows.find(r => r.key === 'scheduleOverride');
+    DB.zonesOverride    = zoRow ? JSON.parse(zoRow.value)  : {};
+    DB.scheduleOverride = scRow ? JSON.parse(scRow.value) : {};
+    serverAvailable = true;
+  } catch(e) {
+    serverAvailable = false;
+    document.getElementById('server-banner').style.display = 'block';
+    // fallback: localStorage
+    try { DB.records          = JSON.parse(localStorage.getItem('minde_records')    || '[]'); } catch {}
+    try { DB.urgencias        = JSON.parse(localStorage.getItem('urgencias')        || '[]'); } catch {}
+    try { DB.zonesOverride    = JSON.parse(localStorage.getItem('zonesOverride')    || '{}'); } catch {}
+    try { DB.scheduleOverride = JSON.parse(localStorage.getItem('scheduleOverride') || '{}'); } catch {}
+  }
+  document.getElementById('app-loading').style.display = 'none';
+}
+
+function loadRecords() { return DB.records; }
+
+async function addRecord(record) {
+  if (serverAvailable) {
+    const payload = {
+      date: record.date, team: record.team, zone_id: record.zone,
+      hours: record.hours, observations: record.observations || '',
+      streets_completed: JSON.stringify(record.streetsCompleted || []),
+      photos: JSON.stringify(record.photos || []),
+      created_at: new Date().toISOString().slice(0, 19),
+    };
+    const { data, error } = await _sb.from('records').insert([payload]).select().single();
+    if (error) throw error;
+    record.id         = data.id;
+    record.created_at = data.created_at;
+  } else {
+    record.id         = Date.now();
+    record.created_at = new Date().toISOString();
+    localStorage.setItem('minde_records', JSON.stringify([record, ...DB.records]));
+  }
+  DB.records.unshift(record);
+  showSaveIndicator();
+}
+
+async function deleteRecord(id) {
+  if (serverAvailable) {
+    const { error } = await _sb.from('records').delete().eq('id', id);
+    if (error) throw error;
+  } else {
+    localStorage.setItem('minde_records', JSON.stringify(DB.records.filter(r => r.id !== id)));
+  }
+  DB.records = DB.records.filter(r => r.id !== id);
+  showSaveIndicator();
+}
+
+// ============================================================
+// ESTADO DAS ZONAS
+// ============================================================
+function getZoneLastCleaning(zoneId) {
+  const recs = loadRecords().filter(r => r.zone == zoneId);
+  if (!recs.length) return null;
+  return recs.reduce((latest, r) => {
+    const d = new Date(r.date);
+    return d > latest ? d : latest;
+  }, new Date(0));
+}
+function getZoneStatus(zone) {
+  const last = getZoneLastCleaning(zone.id);
+  if (!last || last.getTime() === 0) return { status: 'never', label: 'Nunca limpa', color: '#6b7280' };
+  const days = (new Date() - last) / 86400000;
+  const limit = zone.frequency * 30;
+  if (days <= limit * 0.75) return { status: 'ok', label: 'Em dia', color: '#22c55e' };
+  if (days <= limit) return { status: 'warning', label: 'A vencer', color: '#f59e0b' };
+  return { status: 'overdue', label: 'Atrasada', color: '#ef4444' };
+}
+function formatDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
+function doLogin() {
+  const team = document.getElementById('login-team').value;
+  const pass = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  if (!team) { err.style.display = 'block'; err.textContent = 'Selecione uma equipa.'; return; }
+  if (!TEAMS_DATA[team] || TEAMS_DATA[team].password !== pass) {
+    err.style.display = 'block'; return;
+  }
+  err.style.display = 'none';
+  currentTeam = team;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('team-badge').textContent = TEAMS_DATA[team].emoji + ' ' + TEAMS_DATA[team].name;
+  initApp();
+  showSection('dashboard');
+}
+function doLogout() {
+  currentTeam = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-password').value = '';
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function showSection(sec) {
+  currentSection = sec;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(sec).classList.add('active');
+  document.querySelector(`[data-section="${sec}"]`)?.classList.add('active');
+  switch(sec) {
+    case 'dashboard': renderDashboard(); break;
+    case 'new-record': initNewRecord(); break;
+    case 'history': renderHistory(); break;
+    case 'plan': renderPlan(); break;
+    case 'calendar': renderCalendar(); break;
+    case 'reports': renderReports(); break;
+    case 'urgencias': initUrgencias(); if (currentUrgenciasTab === 'list') renderUrgenciasList(); break;
+    case 'admin': renderAdminStreets(); break; // other admin panels lazy-loaded via toggleAdminSection
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function populateZoneSelects() {
+  const zones = getEffectiveZones();
+  const selIds = ['r-zone', 'f-zone', 'edit-r-zone'];
+  selIds.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const val = sel.value;
+    const firstOpt = sel.options[0] ? sel.options[0].cloneNode(true) : Object.assign(document.createElement('option'), {value:'', textContent:'Todas'});
+    sel.innerHTML = '';
+    sel.appendChild(firstOpt);
+    zones.forEach(z => {
+      const opt = document.createElement('option');
+      opt.value = z.id;
+      opt.textContent = `${z.code} — ${z.name} (${z.locality})`;
+      sel.appendChild(opt);
+    });
+    if (val) sel.value = val;
+  });
+  // Urgências zone select
+  const urgZone = document.getElementById('urg-zone');
+  if (urgZone) {
+    const val = urgZone.value;
+    urgZone.innerHTML = '<option value="">Selecionar zona...</option>';
+    zones.forEach(z => {
+      const opt = document.createElement('option');
+      opt.value = z.id;
+      opt.textContent = `${z.code} — ${z.name} (${z.locality})`;
+      urgZone.appendChild(opt);
+    });
+    if (val) urgZone.value = val;
+  }
+}
+
+function initApp() {
+  populateZoneSelects();
+  // Set default team in form
+  if (currentTeam !== 'admin') {
+    document.getElementById('r-team').value = currentTeam;
+  }
+  // Show/hide admin nav
+  const adminNav = document.getElementById('nav-admin');
+  if (adminNav) adminNav.style.display = currentTeam === 'admin' ? '' : 'none';
+  // Update urgências badge
+  updateUrgenciasBadge();
+  // Listen for localStorage changes (other tabs)
+  window.addEventListener('storage', e => {
+    if (e.key === 'urgencias') updateUrgenciasBadge();
+  });
+}
+
+function initNewRecord() {
+  const d = document.getElementById('r-date');
+  if (!d.value) d.value = new Date().toISOString().split('T')[0];
+  if (currentTeam && currentTeam !== 'admin') {
+    document.getElementById('r-team').value = currentTeam;
+  }
+  uploadedPhotos = [];
+  document.getElementById('photo-preview').innerHTML = '';
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const records = loadRecords();
+  const effectiveZones = getEffectiveZones();
+  const statuses = effectiveZones.map(z => getZoneStatus(z));
+  const ok = statuses.filter(s => s.status === 'ok').length;
+  const warn = statuses.filter(s => s.status === 'warning').length;
+  const over = statuses.filter(s => s.status === 'overdue').length;
+  const never = statuses.filter(s => s.status === 'never').length;
+
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="stat-card green"><div class="stat-val">${ok}</div><div class="stat-label">✅ Zonas em dia</div></div>
+    <div class="stat-card yellow"><div class="stat-val">${warn}</div><div class="stat-label">⚠️ A vencer em breve</div></div>
+    <div class="stat-card red"><div class="stat-val">${over}</div><div class="stat-label">🚨 Atrasadas</div></div>
+    <div class="stat-card blue"><div class="stat-val">${records.length}</div><div class="stat-label">📋 Total de registos</div></div>
+  `;
+
+  // Zone grid
+  const zg = document.getElementById('dash-zones');
+  zg.innerHTML = effectiveZones.map(z => {
+    const st = getZoneStatus(z);
+    const last = getZoneLastCleaning(z.id);
+    return `<div class="zone-card ${st.status}">
+      <div class="zone-code">${z.code}</div>
+      <div class="zone-name">${z.name}</div>
+      <div class="zone-locality">📍 ${z.locality}</div>
+      <div class="zone-info">
+        <span class="badge badge-${z.density.toLowerCase()}">${z.density} densidade</span>
+        <span class="badge badge-gray">/${z.frequency}m</span>
+      </div>
+      <div style="margin-top:8px;"><span class="badge" style="background:${st.color}22;color:${st.color};">● ${st.label}</span></div>
+      <div class="zone-last">Última limpeza: <strong>${last && last.getTime() > 0 ? formatDate(last) : 'Nunca'}</strong></div>
+    </div>`;
+  }).join('');
+
+  // Recent records
+  const recent = records.slice(0, 5);
+  const dr = document.getElementById('dash-recent');
+  if (!recent.length) {
+    dr.innerHTML = '<div class="empty-state"><div class="icon">📝</div><p>Nenhum registo ainda. Comece por criar um registo.</p></div>';
+    return;
+  }
+  dr.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Data</th><th>Equipa</th><th>Zona</th><th>Horas</th><th>Observações</th></tr></thead>
+    <tbody>${recent.map(r => {
+      const z = effectiveZones.find(z => z.id == r.zone);
+      return `<tr>
+        <td>${formatDate(r.date)}</td>
+        <td><span class="badge badge-${r.team.toLowerCase()}">${TEAMS_DATA[r.team]?.emoji} ${r.team}</span></td>
+        <td>${z ? z.code + ' — ' + z.name : r.zone}</td>
+        <td>${r.hours}h</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.observations || '—'}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+}
+
+// ============================================================
+// STREETS LIST
+// ============================================================
+function updateStreetsList() {
+  const zoneId = document.getElementById('r-zone').value;
+  const container = document.getElementById('streets-list');
+  if (!zoneId) {
+    container.innerHTML = '<span style="color:var(--text-muted);font-size:13px;">Selecione primeiro uma zona</span>';
+    return;
+  }
+  const effectiveZones = getEffectiveZones();
+  const zone = effectiveZones.find(z => z.id == zoneId);
+  if (!zone) return;
+  container.innerHTML = zone.streets.map(s =>
+    `<label><input type="checkbox" value="${s}"> ${s}</label>`
+  ).join('');
+}
+
+function getCheckedStreets() {
+  return Array.from(document.querySelectorAll('#streets-list input[type="checkbox"]:checked')).map(cb => cb.value);
+}
+
+// ============================================================
+// PHOTOS
+// ============================================================
+function compressImage(file, maxW, maxH, quality) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+let photosLoading = false;
+
+function handlePhotos(input) {
+  const files = Array.from(input.files).slice(0, 3); // máx 3 fotos
+  uploadedPhotos = [];
+  photosLoading = true;
+  document.getElementById('photo-preview').innerHTML = '<span style="color:var(--text-muted);font-size:13px;">A comprimir imagens...</span>';
+  const btn = document.querySelector('button[onclick="submitRecord()"]');
+  if (btn) btn.disabled = true;
+
+  Promise.all(files.map(f => compressImage(f, 800, 600, 0.65)))
+    .then(results => {
+      uploadedPhotos = results;
+      const preview = document.getElementById('photo-preview');
+      preview.innerHTML = '';
+      results.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.cssText = 'max-height:80px;border-radius:6px;margin:4px;';
+        preview.appendChild(img);
+      });
+      photosLoading = false;
+      if (btn) btn.disabled = false;
+    });
+}
+
+// ============================================================
+// SUBMIT RECORD
+// ============================================================
+async function submitRecord() {
+  const date = document.getElementById('r-date').value;
+  const team = document.getElementById('r-team').value;
+  const zone = document.getElementById('r-zone').value;
+  const hours = document.getElementById('r-hours').value;
+  const obs = document.getElementById('r-obs').value;
+  const streets = getCheckedStreets();
+  const alertEl = document.getElementById('record-alert');
+
+  if (!date || !team || !zone || !hours) {
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-error';
+    alertEl.textContent = '⚠️ Por favor preencha todos os campos obrigatórios: data, equipa, zona e horas.';
+    return;
+  }
+
+  if (photosLoading) {
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-error';
+    alertEl.textContent = '⏳ Aguarde — as fotos ainda estão a ser processadas.';
+    return;
+  }
+
+  try {
+    await addRecord({ date, team, zone: parseInt(zone), hours: parseFloat(hours), observations: obs, streetsCompleted: streets, photos: uploadedPhotos });
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-success';
+    alertEl.textContent = '✅ Registo guardado com sucesso!';
+
+    // Reset form
+    document.getElementById('r-zone').value = '';
+    document.getElementById('r-hours').value = '';
+    document.getElementById('r-obs').value = '';
+    document.getElementById('streets-list').innerHTML = '<span style="color:var(--text-muted);font-size:13px;">Selecione primeiro uma zona</span>';
+    uploadedPhotos = [];
+    document.getElementById('photo-preview').innerHTML = '';
+    document.getElementById('r-photos').value = '';
+
+    setTimeout(() => { alertEl.style.display = 'none'; }, 4000);
+  } catch(e) {
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-error';
+    alertEl.textContent = '❌ Erro ao guardar: ' + e.message;
+    return;
+  }
+}
+
+function clearForm() {
+  document.getElementById('r-zone').value = '';
+  document.getElementById('r-hours').value = '';
+  document.getElementById('r-obs').value = '';
+  document.getElementById('r-obs').value = '';
+  updateStreetsList();
+  uploadedPhotos = [];
+  document.getElementById('photo-preview').innerHTML = '';
+  document.getElementById('record-alert').style.display = 'none';
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function renderHistory() {
+  let records = loadRecords();
+  const fTeam = document.getElementById('f-team')?.value;
+  const fZone = document.getElementById('f-zone')?.value;
+  const fFrom = document.getElementById('f-date-from')?.value;
+  const fTo = document.getElementById('f-date-to')?.value;
+
+  if (fTeam) records = records.filter(r => r.team === fTeam);
+  if (fZone) records = records.filter(r => r.zone == fZone);
+  if (fFrom) records = records.filter(r => r.date >= fFrom);
+  if (fTo) records = records.filter(r => r.date <= fTo);
+
+  const tbody = document.getElementById('history-body');
+  const empty = document.getElementById('history-empty');
+
+  if (!records.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const effectiveZones = getEffectiveZones();
+  tbody.innerHTML = records.map(r => {
+    const z = effectiveZones.find(z => z.id == r.zone);
+    const hasObs = r.observations && r.observations.length > 0;
+    const hasStreets = r.streetsCompleted && r.streetsCompleted.length > 0;
+    const hasPhotos = r.photos && r.photos.length > 0;
+    const canEdit = currentTeam === 'admin' || currentTeam === r.team;
+    return `<tr>
+      <td>${formatDate(r.date)}${r.editedAt ? `<div class="edited-label">editado em ${formatDate(r.editedAt)}</div>` : ''}</td>
+      <td><span class="badge badge-${r.team?.toLowerCase()}">${TEAMS_DATA[r.team]?.emoji || ''} Equipa ${r.team}</span></td>
+      <td>${z ? `<strong>${z.code}</strong> ${z.name}` : r.zone}<br><small style="color:var(--text-muted);">${z?.locality || ''}</small></td>
+      <td><strong>${r.hours}h</strong></td>
+      <td>${hasObs ? '<span style="color:var(--success)">✓</span>' : '—'}</td>
+      <td>
+        <button class="expand-btn" onclick="toggleDetail(${r.id})">Ver detalhes</button>
+        ${canEdit ? `<button class="expand-btn" style="color:var(--secondary);margin-left:8px;" onclick="openEditRecord(${r.id})">✏️ Editar</button>` : ''}
+        ${currentTeam === 'admin' ? `<button class="expand-btn" style="color:var(--danger);margin-left:8px;" onclick="if(confirm('Eliminar este registo?'))deleteRecord(${r.id}),renderHistory()">Eliminar</button>` : ''}
+        <div class="record-detail" id="detail-${r.id}">
+          ${hasStreets ? `<p><strong>Ruas concluídas:</strong> ${r.streetsCompleted.join(', ')}</p>` : ''}
+          ${hasObs ? `<p style="margin-top:8px;"><strong>Observações:</strong> ${r.observations}</p>` : ''}
+          ${hasPhotos ? `<div style="margin-top:8px;"><strong>Fotos:</strong><div class="photo-preview">${r.photos.map(p => `<img src="${p}">`).join('')}</div></div>` : ''}
+          ${!hasStreets && !hasObs && !hasPhotos ? '<p style="color:var(--text-muted);">Sem detalhes adicionais.</p>' : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleDetail(id) {
+  const el = document.getElementById(`detail-${id}`);
+  el.classList.toggle('open');
+}
+
+function clearFilters() {
+  document.getElementById('f-team').value = '';
+  document.getElementById('f-zone').value = '';
+  document.getElementById('f-date-from').value = '';
+  document.getElementById('f-date-to').value = '';
+  renderHistory();
+}
+
+// ============================================================
+// PLAN
+// ============================================================
+function switchPlanTab(filter) {
+  currentPlanFilter = filter;
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['all','minde','covao','vale'][i] === filter);
+  });
+  renderPlan();
+}
+
+function renderPlan() {
+  const locality = { all: null, minde: 'Minde', covao: 'Covão do Coelho', vale: 'Vale Alto' }[currentPlanFilter];
+  const allZones = getEffectiveZones();
+  const zones = locality ? allZones.filter(z => z.locality === locality) : allZones;
+  document.getElementById('plan-zones').innerHTML = zones.map(z => `
+    <div class="plan-zone-card ${z.density.toLowerCase()}">
+      <div class="plan-zone-header">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px;">${z.code} · ${z.locality}</div>
+          <div class="plan-zone-title">${z.name}</div>
+        </div>
+        <div class="plan-zone-meta">
+          <span class="badge badge-${z.density.toLowerCase()}">${z.density} densidade</span>
+          <span class="badge badge-gray">Cada ${z.frequency} meses</span>
+          <span class="badge badge-${z.team.toLowerCase()}">Equipa ${z.team}</span>
+          <span class="badge badge-gray">Esforço: ${z.effort}</span>
+        </div>
+      </div>
+      <div class="plan-zone-desc">${z.description}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Ruas incluídas (${z.streets.length})</div>
+      <div class="streets-list">${z.streets.map(s => `<span class="street-tag">🛣️ ${s}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+function renderCalendar() {
+  const effectiveZones = getEffectiveZones();
+  const getZoneTag = (id) => {
+    const z = effectiveZones.find(z => z.id === id);
+    if (!z) return '';
+    const isHD = z.frequency === 2;
+    return `<span class="cal-zone ${isHD ? 'hd' : 'ld'}" title="${z.name}">${z.code}</span>`;
+  };
+
+  document.getElementById('calendar-body').innerHTML = getEffectiveSchedule().map(row => {
+    const typeLabels = { normal: 'Normal', high: 'Alta atividade', light: 'Leve', buffer: '— Tampão —' };
+    const typeBadge = row.type === 'buffer'
+      ? `<span class="cal-buffer">Mês tampão</span>`
+      : `<span class="badge badge-gray">${typeLabels[row.type]}</span>`;
+    return `<tr>
+      <td><strong>${row.label}</strong></td>
+      <td>${row.A.map(getZoneTag).join('') || (row.type==='buffer' ? '<span class="cal-buffer">—</span>' : '')}</td>
+      <td>${row.B.map(getZoneTag).join('') || (row.type==='buffer' ? '<span class="cal-buffer">—</span>' : '')}</td>
+      <td>${row.C.map(getZoneTag).join('') || (row.type==='buffer' ? '<span class="cal-buffer">—</span>' : '')}</td>
+      <td>${typeBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// REPORTS
+// ============================================================
+function renderReports() {
+  const records = loadRecords();
+  const effectiveZones = getEffectiveZones();
+
+  // Compliance
+  const complianceEl = document.getElementById('report-compliance');
+  complianceEl.innerHTML = effectiveZones.map(z => {
+    const st = getZoneStatus(z);
+    const last = getZoneLastCleaning(z.id);
+    const zRecs = records.filter(r => r.zone == z.id).length;
+    const colorMap = { ok: '#22c55e', warning: '#f59e0b', overdue: '#ef4444', never: '#6b7280' };
+    const pct = st.status === 'never' ? 0 : st.status === 'ok' ? 90 : st.status === 'warning' ? 50 : 10;
+    return `<div class="report-zone-row">
+      <div style="min-width:60px;font-size:12px;font-weight:700;color:var(--text-muted);">${z.code}</div>
+      <div style="flex:2;min-width:120px;font-size:13px;font-weight:600;">${z.name}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${colorMap[st.status]};"></div></div>
+      <span class="badge" style="background:${colorMap[st.status]}22;color:${colorMap[st.status]};min-width:90px;text-align:center;">${st.label}</span>
+      <div style="font-size:12px;color:var(--text-muted);min-width:80px;">${last && last.getTime()>0 ? formatDate(last) : 'Nunca'}</div>
+      <div style="font-size:12px;color:var(--text-muted);min-width:60px;">${zRecs} reg.</div>
+    </div>`;
+  }).join('');
+
+  // Teams
+  const teamsEl = document.getElementById('report-teams');
+  teamsEl.innerHTML = ['A','B','C'].map(t => {
+    const tRecs = records.filter(r => r.team === t);
+    const totalHours = tRecs.reduce((s, r) => s + (parseFloat(r.hours)||0), 0);
+    const uniqueZones = new Set(tRecs.map(r => r.zone)).size;
+    return `<div style="padding:14px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span class="badge badge-${t.toLowerCase()}" style="font-size:14px;padding:5px 14px;">Equipa ${t}</span>
+        <span style="font-size:13px;color:var(--text-muted);">${TEAMS_DATA[t].name}</span>
+      </div>
+      <div style="display:flex;gap:20px;font-size:14px;flex-wrap:wrap;">
+        <span>📋 <strong>${tRecs.length}</strong> registos</span>
+        <span>⏱️ <strong>${totalHours.toFixed(1)}h</strong> trabalhadas</span>
+        <span>🗺️ <strong>${uniqueZones}</strong> zonas visitadas</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Summary
+  const totalHours = records.reduce((s,r) => s+(parseFloat(r.hours)||0), 0);
+  const monthsAct = new Set(records.map(r => r.date?.slice(0,7))).size;
+  document.getElementById('report-summary').innerHTML = `
+    <div class="grid-3">
+      <div class="stat-card blue"><div class="stat-val">${records.length}</div><div class="stat-label">Total de registos</div></div>
+      <div class="stat-card green"><div class="stat-val">${totalHours.toFixed(0)}h</div><div class="stat-label">Total de horas registadas</div></div>
+      <div class="stat-card blue"><div class="stat-val">${monthsAct}</div><div class="stat-label">Meses com atividade</div></div>
+    </div>
+    <div style="margin-top:16px;font-size:14px;color:var(--text-muted);">
+      <p>• Zonas de alta densidade (limpeza de 2 em 2 meses): <strong>Z01, Z02, Z03, Z04, Z05, Z07, Z09, Z14, Z18</strong></p>
+      <p>• Zonas de baixa/média densidade (limpeza de 6 em 6 meses): <strong>Z06, Z08, Z10, Z11, Z12, Z13, Z15, Z16, Z17, Z19, Z20</strong></p>
+    </div>`;
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportCSV() {
+  const records = loadRecords();
+  if (!records.length) { alert('Não existem registos para exportar.'); return; }
+
+  const effectiveZones = getEffectiveZones();
+  const headers = ['ID', 'Data', 'Equipa', 'Código Zona', 'Nome Zona', 'Localidade', 'Horas', 'Ruas Concluídas', 'Observações', 'Nº Fotos'];
+  const rows = records.map(r => {
+    const z = effectiveZones.find(z => z.id == r.zone);
+    return [
+      r.id, r.date, `Equipa ${r.team}`,
+      z?.code || '', z?.name || r.zone, z?.locality || '',
+      r.hours,
+      (r.streetsCompleted || []).join('; '),
+      (r.observations || '').replace(/"/g, '""'),
+      (r.photos || []).length
+    ];
+  });
+
+  const csv = '﻿' + [headers, ...rows]
+    .map(row => row.map(c => `"${c}"`).join(','))
+    .join('\r\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `registos_limpeza_minde_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// SAVE INDICATOR
+// ============================================================
+function showSaveIndicator() {
+  const el = document.getElementById('save-indicator');
+  if (!el) return;
+  const now = new Date();
+  el.textContent = `💾 Guardado às ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  el.style.display = 'block';
+  el.style.opacity = '1';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => { el.style.opacity = '0'; setTimeout(() => { el.style.display = 'none'; }, 300); }, 3000);
+}
+
+// ============================================================
+// ZONES OVERRIDE (street management + zone metadata)
+// ============================================================
+function loadZonesOverride() { return DB.zonesOverride; }
+
+async function saveZonesOverride(override) {
+  DB.zonesOverride = override;
+  try {
+    if (serverAvailable) {
+      const { error } = await _sb.from('config').upsert({ key: 'zonesOverride', value: JSON.stringify(override) });
+      if (error) throw error;
+    } else {
+      localStorage.setItem('zonesOverride', JSON.stringify(override));
+    }
+    showSaveIndicator();
+  } catch(e) {
+    alert('❌ Erro ao guardar configuração de zonas: ' + e.message);
+  }
+}
+function getEffectiveZones() {
+  const override = loadZonesOverride();
+  return ZONES.map(z => {
+    const key = String(z.id);
+    if (override[key] !== undefined) {
+      // Backward compat: old format stored plain array, new format stores object
+      const raw = override[key];
+      const ov = Array.isArray(raw) ? { streets: raw } : raw;
+      return {
+        ...z,
+        streets: ov.streets !== undefined ? ov.streets : z.streets,
+        name: ov.name !== undefined ? ov.name : z.name,
+        density: ov.density !== undefined ? ov.density : z.density,
+        frequency: ov.frequency !== undefined ? ov.frequency : z.frequency,
+        effort: ov.effort !== undefined ? ov.effort : z.effort
+      };
+    }
+    return z;
+  });
+}
+async function resetZonesOverride() {
+  if (!confirm('Repor todas as ruas e metadados de zonas para os dados originais? Esta ação não pode ser desfeita.')) return;
+  DB.zonesOverride = {};
+  try {
+    if (serverAvailable) {
+      await _sb.from('config').upsert({ key: 'zonesOverride', value: '{}' });
+    } else {
+      localStorage.removeItem('zonesOverride');
+    }
+  } catch(e) { /* best effort */ }
+  renderAdminStreets();
+  renderAdminZones();
+  updateStreetsList();
+  showSaveIndicator();
+}
+
+// ============================================================
+// SCHEDULE OVERRIDE
+// ============================================================
+function loadScheduleOverride() { return DB.scheduleOverride; }
+
+async function saveScheduleOverride(override) {
+  DB.scheduleOverride = override;
+  try {
+    if (serverAvailable) {
+      const { error } = await _sb.from('config').upsert({ key: 'scheduleOverride', value: JSON.stringify(override) });
+      if (error) throw error;
+    } else {
+      localStorage.setItem('scheduleOverride', JSON.stringify(override));
+    }
+    showSaveIndicator();
+  } catch(e) {
+    alert('❌ Erro ao guardar calendário: ' + e.message);
+  }
+}
+function getEffectiveSchedule() {
+  const override = loadScheduleOverride();
+  return SCHEDULE.map(row => {
+    const key = String(row.month);
+    if (override[key]) {
+      return { ...row, A: override[key].A || row.A, B: override[key].B || row.B, C: override[key].C || row.C };
+    }
+    return row;
+  });
+}
+async function resetScheduleOverride() {
+  if (!confirm('Repor o calendário original? Esta ação não pode ser desfeita.')) return;
+  DB.scheduleOverride = {};
+  try {
+    if (serverAvailable) {
+      await _sb.from('config').upsert({ key: 'scheduleOverride', value: '{}' });
+    } else {
+      localStorage.removeItem('scheduleOverride');
+    }
+  } catch(e) { /* best effort */ }
+  renderAdminSchedule();
+  showSaveIndicator();
+}
+
+// ============================================================
+// ADMIN — STREET MANAGEMENT
+// ============================================================
+function getZoneOverrideEntry(zoneId) {
+  const override = loadZonesOverride();
+  return override[String(zoneId)] || {};
+}
+function setZoneOverrideEntry(zoneId, updates) {
+  const override = loadZonesOverride();
+  const key = String(zoneId);
+  override[key] = { ...getZoneOverrideEntry(zoneId), ...updates };
+  // If override matches defaults, remove it to keep storage clean
+  const orig = ZONES.find(z => z.id === zoneId);
+  const ov = override[key];
+  const identical = (
+    (!ov.streets || JSON.stringify(ov.streets) === JSON.stringify(orig.streets)) &&
+    (!ov.name || ov.name === orig.name) &&
+    (!ov.density || ov.density === orig.density) &&
+    (!ov.frequency || String(ov.frequency) === String(orig.frequency)) &&
+    (!ov.effort || ov.effort === orig.effort)
+  );
+  if (identical && Object.keys(ov).length === 0) delete override[key];
+  saveZonesOverride(override);
+}
+
+function renderAdminStreets() {
+  const effectiveZones = getEffectiveZones();
+  const override = loadZonesOverride();
+  const container = document.getElementById('admin-streets-container');
+  if (!container) return;
+
+  container.innerHTML = effectiveZones.map(z => {
+    const streets = z.streets;
+    const isModified = !!override[String(z.id)];
+    const otherZones = effectiveZones.filter(oz => oz.id !== z.id);
+    return `<div class="zone-street-block">
+      <div class="zone-street-header">
+        <span class="badge badge-gray">${z.code}</span>
+        <span class="zone-street-title">${z.name} <small style="color:var(--text-muted);font-weight:400;">(${z.locality})</small></span>
+        ${isModified ? '<span class="badge badge-yellow" style="font-size:11px;">Modificado</span>' : ''}
+        <span style="font-size:12px;color:var(--text-muted);">${streets.length} ruas</span>
+      </div>
+      <div id="streets-zone-${z.id}">
+        ${streets.length === 0 ? '<div style="color:var(--text-muted);font-size:13px;font-style:italic;">Nenhuma rua definida.</div>' :
+          streets.map((s, i) => `<div class="street-item">
+            <div class="street-move-row">
+              <span>${s}</span>
+              <button class="btn-move-street" onclick="toggleMoveStreet(${z.id},${i})">Mover →</button>
+              <span id="move-ui-${z.id}-${i}" style="display:none;">
+                <select class="move-street-select" id="move-sel-${z.id}-${i}">
+                  ${otherZones.map(oz => `<option value="${oz.id}">${oz.code} — ${oz.name}</option>`).join('')}
+                </select>
+                <button class="btn-move-confirm" onclick="confirmMoveStreet(${z.id},${i})">✓</button>
+              </span>
+            </div>
+            <button class="btn-remove-street" onclick="removeStreet(${z.id}, ${i})" title="Remover rua">❌</button>
+          </div>`).join('')}
+      </div>
+      <div class="add-street-row">
+        <input type="text" id="add-street-input-${z.id}" placeholder="Nome da rua..." onkeydown="if(event.key==='Enter')addStreet(${z.id})">
+        <button class="btn-add-street" onclick="addStreet(${z.id})">Adicionar</button>
+      </div>
+      <div class="street-error" id="street-error-${z.id}"></div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMoveStreet(zoneId, idx) {
+  const el = document.getElementById(`move-ui-${zoneId}-${idx}`);
+  if (el) el.style.display = el.style.display === 'none' ? 'inline-flex' : 'none';
+}
+
+function confirmMoveStreet(fromZoneId, streetIdx) {
+  const selEl = document.getElementById(`move-sel-${fromZoneId}-${streetIdx}`);
+  if (!selEl) return;
+  const toZoneId = parseInt(selEl.value);
+  const effectiveZones = getEffectiveZones();
+  const fromZone = effectiveZones.find(z => z.id === fromZoneId);
+  const toZone = effectiveZones.find(z => z.id === toZoneId);
+  if (!fromZone || !toZone) return;
+  const streetName = fromZone.streets[streetIdx];
+  if (!streetName) return;
+
+  // Check duplicate in target zone
+  if (toZone.streets.find(s => s.toLowerCase() === streetName.toLowerCase())) {
+    alert(`A rua "${streetName}" já existe em ${toZone.code} — ${toZone.name}`);
+    return;
+  }
+
+  // Remove from source
+  const newFromStreets = fromZone.streets.filter((_, i) => i !== streetIdx);
+  // Add to target
+  const newToStreets = [...toZone.streets, streetName];
+
+  const override = loadZonesOverride();
+  override[String(fromZoneId)] = { ...getZoneOverrideEntry(fromZoneId), streets: newFromStreets };
+  override[String(toZoneId)] = { ...getZoneOverrideEntry(toZoneId), streets: newToStreets };
+  saveZonesOverride(override);
+  renderAdminStreets();
+  updateStreetsList();
+}
+
+function addStreet(zoneId) {
+  const input = document.getElementById(`add-street-input-${zoneId}`);
+  const errorEl = document.getElementById(`street-error-${zoneId}`);
+  const name = input.value.trim();
+
+  errorEl.style.display = 'none';
+  if (!name) return;
+
+  const effectiveZones = getEffectiveZones();
+  const nameLower = name.toLowerCase();
+
+  // Check for duplicates across all zones
+  for (const z of effectiveZones) {
+    const found = z.streets.find(s => s.toLowerCase() === nameLower);
+    if (found) {
+      errorEl.textContent = `Esta rua já existe em ${z.code} — ${z.name}`;
+      errorEl.style.display = 'block';
+      return;
+    }
+  }
+
+  // Add the street
+  const currentZone = effectiveZones.find(z => z.id === zoneId);
+  const newStreets = [...currentZone.streets, name];
+  const override = loadZonesOverride();
+  override[String(zoneId)] = { ...getZoneOverrideEntry(zoneId), streets: newStreets };
+  saveZonesOverride(override);
+  input.value = '';
+  renderAdminStreets();
+  updateStreetsList();
+}
+
+function removeStreet(zoneId, streetIndex) {
+  const effectiveZones = getEffectiveZones();
+  const zone = effectiveZones.find(z => z.id === zoneId);
+  const newStreets = zone.streets.filter((_, i) => i !== streetIndex);
+  const override = loadZonesOverride();
+  override[String(zoneId)] = { ...getZoneOverrideEntry(zoneId), streets: newStreets };
+  saveZonesOverride(override);
+  renderAdminStreets();
+  updateStreetsList();
+}
+
+// ============================================================
+// ADMIN — ZONE METADATA EDITING
+// ============================================================
+function renderAdminZones() {
+  const effectiveZones = getEffectiveZones();
+  const container = document.getElementById('admin-zones-container');
+  if (!container) return;
+
+  container.innerHTML = effectiveZones.map(z => `
+    <div class="zone-street-block" id="zone-edit-block-${z.id}">
+      <div class="zone-street-header" style="flex-wrap:wrap;gap:8px;">
+        <span class="badge badge-gray">${z.code}</span>
+        <span class="zone-street-title" id="zone-name-display-${z.id}">${z.name}</span>
+        <small style="color:var(--text-muted);font-weight:400;">(${z.locality})</small>
+        <div style="display:flex;gap:6px;margin-left:auto;">
+          <button class="btn-icon" title="Editar nome" onclick="startEditZoneName(${z.id})">✏️</button>
+          <button class="btn-icon" title="Editar características" onclick="toggleZoneCharPanel(${z.id})">⚙️</button>
+        </div>
+      </div>
+      <div id="zone-name-edit-row-${z.id}" style="display:none;margin-bottom:10px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="zone-name-edit" id="zone-name-input-${z.id}" value="${z.name}" onkeydown="if(event.key==='Enter')saveZoneName(${z.id})">
+          <button class="btn btn-primary" style="padding:6px 12px;font-size:13px;" onclick="saveZoneName(${z.id})">✓ Guardar</button>
+          <button class="btn btn-secondary" style="padding:6px 12px;font-size:13px;" onclick="cancelEditZoneName(${z.id})">✕</button>
+        </div>
+      </div>
+      <div id="zone-char-panel-${z.id}" class="zone-char-panel" style="display:none;">
+        <div class="zone-char-grid">
+          <div class="form-group">
+            <label>Localidade</label>
+            <input type="text" value="${z.locality}" readonly style="background:#f8fafc;color:var(--text-muted);">
+          </div>
+          <div class="form-group">
+            <label>Densidade</label>
+            <select id="zchar-density-${z.id}">
+              <option value="Alta" ${z.density==='Alta'?'selected':''}>Alta</option>
+              <option value="Média" ${z.density==='Média'?'selected':''}>Média</option>
+              <option value="Baixa" ${z.density==='Baixa'?'selected':''}>Baixa</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Frequência (meses)</label>
+            <select id="zchar-freq-${z.id}">
+              <option value="2" ${z.frequency==2?'selected':''}>2 meses</option>
+              <option value="6" ${z.frequency==6?'selected':''}>6 meses</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Esforço</label>
+            <select id="zchar-effort-${z.id}">
+              <option value="Alta" ${z.effort==='Alta'?'selected':''}>Alta</option>
+              <option value="Média" ${z.effort==='Média'?'selected':''}>Média</option>
+              <option value="Baixa" ${z.effort==='Baixa'?'selected':''}>Baixa</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-primary" style="font-size:13px;padding:8px 16px;" onclick="saveZoneChars(${z.id})">💾 Guardar Características</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function startEditZoneName(zoneId) {
+  document.getElementById(`zone-name-edit-row-${zoneId}`).style.display = 'block';
+  document.getElementById(`zone-name-input-${zoneId}`).focus();
+}
+function cancelEditZoneName(zoneId) {
+  const effectiveZones = getEffectiveZones();
+  const z = effectiveZones.find(z => z.id === zoneId);
+  document.getElementById(`zone-name-input-${zoneId}`).value = z ? z.name : '';
+  document.getElementById(`zone-name-edit-row-${zoneId}`).style.display = 'none';
+}
+function saveZoneName(zoneId) {
+  const input = document.getElementById(`zone-name-input-${zoneId}`);
+  const newName = input.value.trim();
+  if (!newName) { alert('O nome não pode estar vazio.'); return; }
+  const override = loadZonesOverride();
+  override[String(zoneId)] = { ...getZoneOverrideEntry(zoneId), name: newName };
+  saveZonesOverride(override);
+  document.getElementById(`zone-name-edit-row-${zoneId}`).style.display = 'none';
+  renderAdminZones();
+  populateZoneSelects();
+  // Refresh other views
+  if (currentSection === 'dashboard') renderDashboard();
+  if (currentSection === 'plan') renderPlan();
+  if (currentSection === 'calendar') renderCalendar();
+}
+function toggleZoneCharPanel(zoneId) {
+  const panel = document.getElementById(`zone-char-panel-${zoneId}`);
+  if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+function saveZoneChars(zoneId) {
+  const density = document.getElementById(`zchar-density-${zoneId}`)?.value;
+  const freq = parseInt(document.getElementById(`zchar-freq-${zoneId}`)?.value);
+  const effort = document.getElementById(`zchar-effort-${zoneId}`)?.value;
+  const override = loadZonesOverride();
+  override[String(zoneId)] = { ...getZoneOverrideEntry(zoneId), density, frequency: freq, effort };
+  saveZonesOverride(override);
+  renderAdminZones();
+}
+
+// ============================================================
+// ADMIN — SCHEDULE EDITOR
+// ============================================================
+function renderAdminSchedule() {
+  const container = document.getElementById('admin-schedule-container');
+  if (!container) return;
+  const effectiveZones = getEffectiveZones();
+  const schedule = getEffectiveSchedule();
+  const override = loadScheduleOverride();
+
+  const teamClass = { A: '', B: 'team-b', C: 'team-c' };
+
+  const rows = schedule.map(row => {
+    const isOverridden = !!override[String(row.month)];
+    const cells = ['A','B','C'].map(team => {
+      const assignedIds = row[team] || [];
+      const chips = assignedIds.map(id => {
+        const z = effectiveZones.find(z => z.id === id);
+        if (!z) return '';
+        return `<span class="sched-chip ${teamClass[team]}">${z.code}<button class="sched-chip-x" onclick="removeSchedZone(${row.month},'${team}',${id})" title="Remover">×</button></span>`;
+      }).join('');
+      // Build "+" dropdown with unassigned zones
+      const allAssigned = new Set([...(row.A||[]),...(row.B||[]),...(row.C||[])]);
+      const available = effectiveZones.filter(z => !allAssigned.has(z.id));
+      const addDropdown = available.length ? `<select class="move-street-select" style="font-size:11px;" onchange="addSchedZone(${row.month},'${team}',parseInt(this.value));this.value=''">
+        <option value="">+</option>
+        ${available.map(z => `<option value="${z.id}">${z.code}</option>`).join('')}
+      </select>` : '';
+      return `<td>${chips}${addDropdown}</td>`;
+    }).join('');
+    return `<tr>
+      <td><strong>${row.label}</strong>${isOverridden ? ' <span class="badge badge-yellow" style="font-size:10px;">★</span>' : ''}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `<table class="schedule-table">
+    <thead><tr><th>Mês</th><th>🟢 Equipa A</th><th>🔵 Equipa B</th><th>🔴 Equipa C</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function addSchedZone(month, team, zoneId) {
+  const override = loadScheduleOverride();
+  const key = String(month);
+  const baseRow = SCHEDULE.find(r => r.month === month);
+  if (!override[key]) override[key] = { A: [...(baseRow?.A||[])], B: [...(baseRow?.B||[])], C: [...(baseRow?.C||[])] };
+  if (!override[key][team].includes(zoneId)) {
+    // Remove from other teams in same month first
+    ['A','B','C'].forEach(t => {
+      override[key][t] = (override[key][t] || []).filter(id => id !== zoneId);
+    });
+    override[key][team].push(zoneId);
+    saveScheduleOverride(override);
+    renderAdminSchedule();
+  }
+}
+
+function removeSchedZone(month, team, zoneId) {
+  const override = loadScheduleOverride();
+  const key = String(month);
+  const baseRow = SCHEDULE.find(r => r.month === month);
+  if (!override[key]) override[key] = { A: [...(baseRow?.A||[])], B: [...(baseRow?.B||[])], C: [...(baseRow?.C||[])] };
+  override[key][team] = (override[key][team] || []).filter(id => id !== zoneId);
+  saveScheduleOverride(override);
+  renderAdminSchedule();
+}
+
+// ============================================================
+// ADMIN — TOGGLE COLLAPSIBLE SECTIONS
+// ============================================================
+function toggleAdminSection(bodyId, arrowId) {
+  const body = document.getElementById(bodyId);
+  const arrow = document.getElementById(arrowId);
+  if (!body) return;
+  const collapsed = body.classList.toggle('collapsed');
+  if (arrow) arrow.classList.toggle('open', !collapsed);
+  // Lazy render
+  if (!collapsed) {
+    if (bodyId === 'admin-zones-body') renderAdminZones();
+    if (bodyId === 'admin-sched-body') renderAdminSchedule();
+  }
+}
+
+// ============================================================
+// RECORD EDITING
+// ============================================================
+let editingRecordId = null;
+let editUploadedPhotos = null; // null = keep existing
+
+function openEditRecord(id) {
+  const records = loadRecords();
+  const record = records.find(r => r.id === id);
+  if (!record) return;
+  editingRecordId = id;
+  editUploadedPhotos = null;
+
+  document.getElementById('edit-r-date').value = record.date || '';
+  document.getElementById('edit-r-team').value = record.team || 'A';
+  document.getElementById('edit-r-hours').value = record.hours || '';
+  document.getElementById('edit-r-obs').value = record.observations || '';
+
+  // Populate zone select if needed
+  populateZoneSelects();
+  document.getElementById('edit-r-zone').value = record.zone || '';
+
+  // Streets
+  updateEditStreetsList();
+  setTimeout(() => {
+    const checked = record.streetsCompleted || [];
+    document.querySelectorAll('#edit-streets-list input[type="checkbox"]').forEach(cb => {
+      cb.checked = checked.includes(cb.value);
+    });
+  }, 50);
+
+  // Photos preview
+  const prev = document.getElementById('edit-photo-preview');
+  prev.innerHTML = (record.photos || []).map(p => `<img src="${p}">`).join('');
+
+  document.getElementById('edit-record-alert').style.display = 'none';
+  document.getElementById('edit-record-modal').style.display = 'flex';
+}
+
+function updateEditStreetsList() {
+  const zoneId = document.getElementById('edit-r-zone').value;
+  const container = document.getElementById('edit-streets-list');
+  if (!zoneId) { container.innerHTML = '<span style="color:var(--text-muted);font-size:13px;">Selecione primeiro uma zona</span>'; return; }
+  const zone = getEffectiveZones().find(z => z.id == zoneId);
+  if (!zone) return;
+  container.innerHTML = zone.streets.map(s => `<label><input type="checkbox" value="${s}"> ${s}</label>`).join('');
+}
+
+function handleEditPhotos(input) {
+  const files = Array.from(input.files).slice(0, 5);
+  editUploadedPhotos = [];
+  document.getElementById('edit-photo-preview').innerHTML = '';
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      editUploadedPhotos.push(e.target.result);
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      document.getElementById('edit-photo-preview').appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function saveEditedRecord() {
+  const date   = document.getElementById('edit-r-date').value;
+  const team   = document.getElementById('edit-r-team').value;
+  const zone   = parseInt(document.getElementById('edit-r-zone').value);
+  const hours  = parseFloat(document.getElementById('edit-r-hours').value);
+  const obs    = document.getElementById('edit-r-obs').value;
+  const streets = Array.from(document.querySelectorAll('#edit-streets-list input[type=checkbox]:checked')).map(cb => cb.value);
+  const photos = editUploadedPhotos !== null ? editUploadedPhotos : (DB.records.find(r => r.id === editingRecordId) || {}).photos || [];
+
+  if (!date || !team || !zone || !hours) {
+    alert('⚠️ Preencha todos os campos obrigatórios.');
+    return;
+  }
+
+  const updated = { date, team, zone, hours, observations: obs, streetsCompleted: streets, photos };
+
+  try {
+    if (serverAvailable) {
+      const payload = {
+        date: updated.date, team: updated.team, zone_id: updated.zone,
+        hours: updated.hours, observations: updated.observations || '',
+        streets_completed: JSON.stringify(updated.streetsCompleted || []),
+        photos: JSON.stringify(updated.photos || []),
+        edited_at: new Date().toISOString().slice(0, 19),
+      };
+      const { data, error } = await _sb.from('records').update(payload).eq('id', editingRecordId).select().single();
+      if (error) throw error;
+      updated.edited_at = data.edited_at;
+    } else {
+      updated.edited_at = new Date().toISOString();
+      localStorage.setItem('minde_records', JSON.stringify(DB.records));
+    }
+    const idx = DB.records.findIndex(r => r.id === editingRecordId);
+    if (idx !== -1) DB.records[idx] = { ...DB.records[idx], ...updated };
+    showSaveIndicator();
+    closeEditModal();
+    renderHistory();
+    renderDashboard();
+  } catch(e) {
+    alert('❌ Erro ao guardar alterações: ' + e.message);
+  }
+}
+
+function closeEditModal() {
+  document.getElementById('edit-record-modal').style.display = 'none';
+  editingRecordId = null;
+  editUploadedPhotos = null;
+}
+
+// ============================================================
+// URGÊNCIAS — EDITING
+// ============================================================
+let editingUrgenciaId = null;
+
+function openEditUrgencia(id) {
+  const urgencias = loadUrgencias();
+  const u = urgencias.find(u => u.id === id);
+  if (!u) return;
+  editingUrgenciaId = id;
+  document.getElementById('edit-urg-type').value = u.type || 'Outro';
+  document.getElementById('edit-urg-priority').value = u.priority || 'urgente';
+  document.getElementById('edit-urg-status').value = u.status || 'pendente';
+  document.getElementById('edit-urg-location').value = u.location || '';
+  document.getElementById('edit-urg-desc').value = u.description || '';
+  document.getElementById('edit-urgencia-modal').style.display = 'flex';
+}
+
+async function saveEditedUrgencia() {
+  const id       = parseInt(editingUrgenciaId);
+  const type     = document.getElementById('edit-urg-type').value;
+  const location = document.getElementById('edit-urg-location').value.trim();
+  const desc     = document.getElementById('edit-urg-desc').value.trim();
+  const priority = document.getElementById('edit-urg-priority').value;
+  const status   = document.getElementById('edit-urg-status').value;
+
+  if (!location) { alert('⚠️ A localização é obrigatória.'); return; }
+
+  const updated = { type, location, description: desc, priority, status };
+  try {
+    if (serverAvailable) {
+      const payload = { type: updated.type, location: updated.location, description: updated.description,
+        priority: updated.priority, status: updated.status, edited_at: new Date().toISOString().slice(0, 19) };
+      const { data, error } = await _sb.from('urgencias').update(payload).eq('id', id).select().single();
+      if (error) throw error;
+      updated.edited_at = data.edited_at;
+    }
+    const urg = DB.urgencias.find(u => u.id === id);
+    if (urg) Object.assign(urg, updated);
+    if (!serverAvailable) { try { localStorage.setItem('urgencias', JSON.stringify(DB.urgencias)); } catch {} }
+    showSaveIndicator();
+    updateUrgenciasBadge();
+    closeEditUrgenciaModal();
+    renderUrgenciasList();
+  } catch(e) {
+    alert('❌ Erro ao guardar urgência: ' + e.message);
+  }
+}
+
+function closeEditUrgenciaModal() {
+  document.getElementById('edit-urgencia-modal').style.display = 'none';
+  editingUrgenciaId = null;
+}
+
+// ============================================================
+// EXPORT / IMPORT
+// ============================================================
+async function exportAllData() {
+  try {
+    let data;
+    if (serverAvailable) {
+      const [recRes, urgRes, cfgRes] = await Promise.all([
+        _sb.from('records').select('*').order('created_at', { ascending: false }),
+        _sb.from('urgencias').select('*').order('created_at', { ascending: false }),
+        _sb.from('config').select('*'),
+      ]);
+      const cfgRows = cfgRes.data || [];
+      const zoRow   = cfgRows.find(r => r.key === 'zonesOverride');
+      const scRow   = cfgRows.find(r => r.key === 'scheduleOverride');
+      data = {
+        exportDate: new Date().toISOString(), version: '4.0-supabase',
+        records: (recRes.data || []).map(mapRecord),
+        urgencias: (urgRes.data || []).map(mapUrgencia),
+        zonesOverride:    zoRow ? JSON.parse(zoRow.value)  : {},
+        scheduleOverride: scRow ? JSON.parse(scRow.value) : {},
+      };
+    } else {
+      data = {
+        exportDate: new Date().toISOString(), version: '3.0',
+        records: DB.records, urgencias: DB.urgencias,
+        zonesOverride: DB.zonesOverride, scheduleOverride: DB.scheduleOverride
+      };
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `minde-limpeza-backup-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch(e) {
+    alert('❌ Erro ao exportar: ' + e.message);
+  }
+}
+
+function handleImportFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.version || !data.exportDate) { alert('Ficheiro inválido ou não reconhecido.'); return; }
+      const recCount = (data.records || []).length;
+      const urgCount = (data.urgencias || []).length;
+      const zoneCount = Object.keys(data.zonesOverride || {}).length;
+      const schedCount = Object.keys(data.scheduleOverride || {}).length;
+      const previewEl = document.getElementById('import-preview-area');
+      previewEl.innerHTML = `<div class="import-preview">
+        <p style="font-weight:700;margin-bottom:8px;">📦 Pré-visualização do backup</p>
+        <p>📅 Exportado em: ${new Date(data.exportDate).toLocaleString('pt-PT')}</p>
+        <p>📋 Registos: <strong>${recCount}</strong></p>
+        <p>🚨 Urgências: <strong>${urgCount}</strong></p>
+        <p>🗺️ Zonas modificadas: <strong>${zoneCount}</strong></p>
+        <p>📅 Meses de calendário modificados: <strong>${schedCount}</strong></p>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn btn-danger" id="confirm-import-btn">⚠️ Substituir dados actuais</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('import-preview-area').innerHTML='';document.getElementById('import-file-input').value=''">Cancelar</button>
+        </div>
+      </div>`;
+      // Store data temporarily and attach handler
+      window._importData = data;
+      document.getElementById('confirm-import-btn').onclick = confirmImport;
+    } catch(err) {
+      alert('Erro ao ler ficheiro: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function confirmImport() {
+  const data = window._importData;
+  if (!data) return;
+  if (!confirm(`Isto irá substituir todos os dados actuais (${(data.records||[]).length} registos, ${(data.urgencias||[]).length} urgências). Esta ação não pode ser desfeita. Continuar?`)) return;
+  try {
+    if (serverAvailable) {
+      // Apagar dados existentes
+      await _sb.from('records').delete().gte('id', 0);
+      await _sb.from('urgencias').delete().gte('id', 0);
+      // Inserir registos
+      if ((data.records || []).length > 0) {
+        const recs = data.records.map(r => ({
+          date: r.date, team: r.team, zone_id: r.zone || r.zone_id,
+          hours: r.hours, observations: r.observations || '',
+          streets_completed: JSON.stringify(r.streetsCompleted || []),
+          photos: JSON.stringify(r.photos || []),
+          created_at: r.created_at || new Date().toISOString().slice(0, 19),
+          edited_at: r.edited_at || null,
+        }));
+        const { error } = await _sb.from('records').insert(recs);
+        if (error) throw error;
+      }
+      // Inserir urgências
+      if ((data.urgencias || []).length > 0) {
+        const urgs = data.urgencias.map(u => ({
+          date: u.date, team: u.team, zone_id: u.zoneId || u.zone_id,
+          type: u.type, location: u.location, description: u.description || '',
+          priority: u.priority, status: u.status || 'pendente',
+          created_at: u.createdAt || u.created_at || new Date().toISOString().slice(0, 19),
+          edited_at: u.edited_at || null,
+        }));
+        const { error } = await _sb.from('urgencias').insert(urgs);
+        if (error) throw error;
+      }
+      // Guardar configurações
+      if (data.zonesOverride)
+        await _sb.from('config').upsert({ key: 'zonesOverride', value: JSON.stringify(data.zonesOverride) });
+      if (data.scheduleOverride)
+        await _sb.from('config').upsert({ key: 'scheduleOverride', value: JSON.stringify(data.scheduleOverride) });
+    } else {
+      if (data.records)         localStorage.setItem('minde_records',    JSON.stringify(data.records));
+      if (data.urgencias)       localStorage.setItem('urgencias',        JSON.stringify(data.urgencias));
+      if (data.zonesOverride)   localStorage.setItem('zonesOverride',    JSON.stringify(data.zonesOverride));
+      if (data.scheduleOverride) localStorage.setItem('scheduleOverride', JSON.stringify(data.scheduleOverride));
+    }
+    window._importData = null;
+    document.getElementById('import-preview-area').innerHTML =
+      '<div class="alert alert-success">✅ Dados importados com sucesso! A recarregar...</div>';
+    setTimeout(() => location.reload(), 1500);
+  } catch(e) {
+    alert('❌ Erro ao importar: ' + e.message);
+  }
+}
+
+// ============================================================
+// URGÊNCIAS — STORAGE
+// ============================================================
+function loadUrgencias() { return DB.urgencias; }
+
+async function saveUrgencias(items) {
+  DB.urgencias = items;
+  if (!serverAvailable) {
+    try { localStorage.setItem('urgencias', JSON.stringify(items)); } catch {}
+  }
+  showSaveIndicator();
+  return true;
+}
+function updateUrgenciasBadge() {
+  const items = loadUrgencias();
+  const pending = items.filter(u => u.status !== 'resolvido').length;
+  const badge = document.getElementById('urgencias-badge');
+  if (!badge) return;
+  if (pending > 0) {
+    badge.textContent = pending;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// ============================================================
+// URGÊNCIAS — TABS
+// ============================================================
+let currentUrgenciasTab = 'report';
+function switchUrgenciasTab(tab) {
+  currentUrgenciasTab = tab;
+  document.getElementById('utab-report').classList.toggle('active', tab === 'report');
+  document.getElementById('utab-list').classList.toggle('active', tab === 'list');
+  document.getElementById('urgencias-report-panel').classList.toggle('active', tab === 'report');
+  document.getElementById('urgencias-list-panel').classList.toggle('active', tab === 'list');
+  if (tab === 'list') renderUrgenciasList();
+}
+
+// ============================================================
+// URGÊNCIAS — INIT FORM
+// ============================================================
+function initUrgencias() {
+  // Auto-fill datetime
+  const dtInput = document.getElementById('urg-datetime');
+  if (dtInput && !dtInput.value) {
+    const now = new Date();
+    dtInput.value = now.toISOString().slice(0, 16);
+  }
+  // Set team from current user
+  if (currentTeam && currentTeam !== 'admin') {
+    const teamSel = document.getElementById('urg-team');
+    if (teamSel) teamSel.value = currentTeam;
+  }
+  // Populate zone dropdown via populateZoneSelects (handles effective zones)
+  populateZoneSelects();
+  updateUrgenciasBadge();
+}
+
+// ============================================================
+// URGÊNCIAS — SUBMIT
+// ============================================================
+async function submitUrgencia() {
+  const datetime = document.getElementById('urg-datetime').value;
+  const team     = document.getElementById('urg-team').value;
+  const zoneId   = document.getElementById('urg-zone').value;
+  const type     = document.getElementById('urg-type').value;
+  const location = document.getElementById('urg-location').value.trim();
+  const desc     = document.getElementById('urg-desc').value.trim();
+  const priority = document.getElementById('urg-priority').value;
+  const alertEl  = document.getElementById('urgencia-form-alert');
+
+  if (!datetime || !team || !zoneId || !location) {
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-error';
+    alertEl.textContent = '⚠️ Por favor preencha: data/hora, equipa, zona e localização.';
+    return;
+  }
+
+  const urgencia = { date: datetime, team, zoneId: parseInt(zoneId), type, location, description: desc, priority };
+
+  try {
+    if (serverAvailable) {
+      const payload = {
+        date: urgencia.date, team: urgencia.team, zone_id: urgencia.zoneId,
+        type: urgencia.type, location: urgencia.location,
+        description: urgencia.description || '', priority: urgencia.priority,
+        status: 'pendente', created_at: new Date().toISOString().slice(0, 19),
+      };
+      const { data, error } = await _sb.from('urgencias').insert([payload]).select().single();
+      if (error) throw error;
+      urgencia.id         = data.id;
+      urgencia.createdAt  = data.created_at;
+      urgencia.created_at = data.created_at;
+    } else {
+      urgencia.id        = Date.now();
+      urgencia.createdAt = new Date().toISOString();
+      urgencia.created_at = urgencia.createdAt;
+      try { localStorage.setItem('urgencias', JSON.stringify([urgencia, ...DB.urgencias])); } catch(e) {
+        alert('❌ Não foi possível guardar: armazenamento local cheio.');
+        return;
+      }
+    }
+    urgencia.status = 'pendente';
+    DB.urgencias.unshift(urgencia);
+    updateUrgenciasBadge();
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-success';
+    alertEl.textContent = '✅ Urgência submetida e guardada com sucesso!';
+    clearUrgenciaForm();
+    setTimeout(() => { alertEl.style.display = 'none'; }, 4000);
+  } catch(e) {
+    alertEl.style.display = 'block';
+    alertEl.className = 'alert alert-error';
+    alertEl.textContent = '❌ Erro ao guardar urgência: ' + e.message;
+  }
+}
+
+function clearUrgenciaForm() {
+  document.getElementById('urg-datetime').value = new Date().toISOString().slice(0, 16);
+  document.getElementById('urg-zone').value = '';
+  document.getElementById('urg-location').value = '';
+  document.getElementById('urg-desc').value = '';
+  document.getElementById('urg-priority').value = 'urgente';
+}
+
+// ============================================================
+// URGÊNCIAS — FILTER STATE
+// ============================================================
+let currentUrgFilter = 'todas';
+function setUrgFilter(f) {
+  currentUrgFilter = f;
+  renderUrgenciasList();
+}
+
+// ============================================================
+// URGÊNCIAS — LIST
+// ============================================================
+function renderUrgenciasList() {
+  const allUrgencias = loadUrgencias();
+  const container = document.getElementById('urgencias-list-container');
+  if (!container) return;
+
+  // Update stats
+  const total = allUrgencias.length;
+  const pendentes = allUrgencias.filter(u => u.status === 'pendente').length;
+  const emCurso = allUrgencias.filter(u => u.status === 'em_curso').length;
+  const resolvidos = allUrgencias.filter(u => u.status === 'resolvido').length;
+
+  const statsRow = document.getElementById('urg-stats-row');
+  if (statsRow) {
+    statsRow.innerHTML = `
+      <div class="urg-stat-card"><div class="urg-stat-val">${total}</div><div class="urg-stat-label">Total</div></div>
+      <div class="urg-stat-card"><div class="urg-stat-val" style="color:var(--danger);">${pendentes}</div><div class="urg-stat-label">🔴 Pendentes</div></div>
+      <div class="urg-stat-card"><div class="urg-stat-val" style="color:var(--warning);">${emCurso}</div><div class="urg-stat-label">🟠 Em Curso</div></div>
+      <div class="urg-stat-card"><div class="urg-stat-val" style="color:var(--success);">${resolvidos}</div><div class="urg-stat-label">🟢 Resolvidos</div></div>
+    `;
+  }
+
+  // Update filter button counts
+  const counts = { todas: total, pendente: pendentes, em_curso: emCurso, resolvido: resolvidos };
+  ['todas','pendente','em_curso','resolvido'].forEach(f => {
+    const cnt = document.getElementById(`urg-cnt-${f}`);
+    if (cnt) cnt.textContent = counts[f];
+    const btn = document.getElementById(`urg-fbtn-${f}`);
+    if (btn) btn.classList.toggle('active', currentUrgFilter === f);
+  });
+
+  // Filter
+  const urgencias = currentUrgFilter === 'todas' ? allUrgencias : allUrgencias.filter(u => u.status === currentUrgFilter);
+
+  if (!urgencias.length) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>Sem urgências para este filtro.</p></div>';
+    return;
+  }
+
+  const isAdmin = currentTeam === 'admin';
+  const effectiveZones = getEffectiveZones();
+  const priorityLabel = { urgente: 'Urgente', muito_urgente: 'Muito Urgente' };
+  const statusLabel = { pendente: 'Pendente', em_curso: 'Em curso', resolvido: 'Resolvido' };
+  const priorityBadgeClass = { urgente: 'badge-urgente', muito_urgente: 'badge-muito-urgente' };
+  const statusBadgeClass = { pendente: 'badge-pendente', em_curso: 'badge-em-curso', resolvido: 'badge-resolvido' };
+
+  container.innerHTML = urgencias.map(u => {
+    const zone = effectiveZones.find(z => z.id === u.zoneId);
+    const dt = new Date(u.date);
+    const dtStr = dt.toLocaleString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const cardClass = u.status === 'resolvido' ? 'resolvido' : u.priority;
+    const canEdit = isAdmin || currentTeam === u.team;
+    return `<div class="urgencia-card ${cardClass}" id="urg-card-${u.id}">
+      <div class="urgencia-card-header">
+        <div>
+          <div class="urgencia-badges">
+            <span class="badge ${priorityBadgeClass[u.priority]}">${priorityLabel[u.priority]}</span>
+            <span class="badge ${statusBadgeClass[u.status]}">${statusLabel[u.status]}</span>
+            <span class="badge badge-${u.team.toLowerCase()}">Equipa ${u.team}</span>
+            <span class="badge badge-gray">${u.type}</span>
+            ${u.editedAt ? '<span class="badge badge-gray" style="font-size:10px;">editado</span>' : ''}
+          </div>
+          <div class="urgencia-meta" style="margin-top:6px;">
+            🕒 ${dtStr} &nbsp;|&nbsp; 📍 ${zone ? zone.code + ' — ' + zone.name : 'Zona desconhecida'}
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          ${canEdit ? `<button class="btn-icon" title="Editar" onclick="openEditUrgencia(${u.id})">✏️</button>` : ''}
+          ${isAdmin ? `<select class="urgencia-status-select" onchange="updateUrgenciaStatus(${u.id}, this.value)">
+            <option value="pendente" ${u.status==='pendente'?'selected':''}>Pendente</option>
+            <option value="em_curso" ${u.status==='em_curso'?'selected':''}>Em curso</option>
+            <option value="resolvido" ${u.status==='resolvido'?'selected':''}>Resolvido</option>
+          </select>` : ''}
+        </div>
+      </div>
+      ${u.location ? `<div class="urgencia-location">📌 ${u.location}</div>` : ''}
+      ${u.description ? `<div class="urgencia-desc">${u.description}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function updateUrgenciaStatus(id, status) {
+  const urg = DB.urgencias.find(u => u.id === id);
+  if (!urg) return;
+  const updated = { type: urg.type, location: urg.location, description: urg.description, priority: urg.priority, status };
+  try {
+    if (serverAvailable) {
+      const payload = { type: urg.type, location: urg.location, description: urg.description,
+        priority: urg.priority, status, edited_at: new Date().toISOString().slice(0, 19) };
+      const { error } = await _sb.from('urgencias').update(payload).eq('id', id);
+      if (error) throw error;
+    }
+    urg.status = status;
+    if (!serverAvailable) { try { localStorage.setItem('urgencias', JSON.stringify(DB.urgencias)); } catch {} }
+    showSaveIndicator();
+    updateUrgenciasBadge();
+    renderUrgenciasList();
+  } catch(e) {
+    alert('❌ Erro ao actualizar urgência: ' + e.message);
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async () => {
+  await initDB();
+  document.getElementById('login-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+});
+</script>
+</body>
+</html>

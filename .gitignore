@@ -1,0 +1,7 @@
+limpeza.db
+limpeza.db-wal
+limpeza.db-shm
+__pycache__/
+*.pyc
+Mapas_unpacked/
+*.tmp

@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano de Limpeza Integral — Freguesia de Minde</title>
+  <style>
+    :root {
+      --primary: #2c6e49;
+      --primary-dark: #1b4d33;
+      --secondary: #1e40af;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --success: #16a34a;
+      --neutral: #6b7280;
+      --bg: #f8fafc;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+
+    .cover {
+      background: linear-gradient(135deg, #1b4d33 0%, #2c6e49 60%, #4a9068 100%);
+      color: white; padding: 80px 60px; min-height: 220px;
+    }
+    .cover-badge { background: rgba(255,255,255,0.15); display: inline-block; padding: 5px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.25); }
+    .cover h1 { font-size: 42px; font-weight: 900; line-height: 1.1; margin-bottom: 12px; letter-spacing: -0.02em; }
+    .cover .subtitle { font-size: 20px; opacity: 0.85; margin-bottom: 24px; }
+    .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; font-size: 14px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 24px; margin-top: 24px; }
+    .cover-meta span strong { display: block; font-size: 16px; color: white; opacity: 1; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+    @media(max-width:768px) { .container { padding: 24px 16px; } .cover { padding: 48px 24px; } .cover h1 { font-size: 28px; } }
+
+    h2 { font-size: 26px; font-weight: 800; color: var(--primary-dark); margin: 48px 0 20px; padding-bottom: 12px; border-bottom: 3px solid var(--primary); display: flex; align-items: center; gap: 10px; }
+    h2:first-child { margin-top: 0; }
+    h3 { font-size: 18px; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+    h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 16px 0 8px; }
+
+    .card { background: white; border-radius: 14px; padding: 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px; border: 1px solid var(--border); }
+    .highlight-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 5px solid var(--success); border-radius: 10px; padding: 18px 22px; margin: 20px 0; }
+    .warning-box { background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid var(--warning); border-radius: 10px; padding: 18px 22px; margin: 20px 0; }
+    .info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-left: 5px solid var(--secondary); border-radius: 10px; padding: 18px 22px; margin: 20px 0; }
+    .danger-box { background: #fef2f2; border: 1px solid #fecaca; border-left: 5px solid var(--danger); border-radius: 10px; padding: 18px 22px; margin: 20px 0; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    @media(max-width:900px) { .grid-4 { grid-template-columns: repeat(2,1fr); } .grid-3 { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+    .stat-box { background: white; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .stat-box .val { font-size: 36px; font-weight: 900; line-height: 1; margin-bottom: 6px; color: var(--primary); }
+    .stat-box .lbl { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .badge-alta { background: #fee2e2; color: #b91c1c; }
+    .badge-media { background: #fef3c7; color: #b45309; }
+    .badge-baixa { background: #dcfce7; color: #15803d; }
+    .badge-2m { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .badge-6m { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .badge-a { background: #dcfce7; color: #15803d; }
+    .badge-b { background: #dbeafe; color: #1d4ed8; }
+    .badge-c { background: #fce7f3; color: #9d174d; }
+    .badge-gray { background: #f1f5f9; color: var(--text-muted); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead th { background: var(--primary); color: white; padding: 11px 14px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    thead th:first-child { border-radius: 8px 0 0 0; }
+    thead th:last-child { border-radius: 0 8px 0 0; }
+    tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:nth-child(even) { background: #f8fafc; }
+    tbody tr:hover { background: #f0fdf4; }
+
+    .cal-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .cal-table th { background: var(--primary-dark); color: white; padding: 10px 12px; text-align: center; font-size: 12px; font-weight: 700; }
+    .cal-table td { padding: 9px 10px; border: 1px solid var(--border); vertical-align: top; }
+    .cal-zone-hd { display: inline-block; background: #fee2e2; color: #b91c1c; border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 800; margin: 2px; border: 1px solid #fca5a5; }
+    .cal-zone-ld { display: inline-block; background: #dbeafe; color: #1d4ed8; border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 800; margin: 2px; border: 1px solid #93c5fd; }
+    .cal-buf { color: var(--text-muted); font-style: italic; font-size: 12px; }
+    .cal-month-label { font-weight: 700; font-size: 13px; }
+    .cal-type-high { background: #fef3c7; }
+    .cal-type-buffer { background: #f1f5f9; }
+    .cal-type-light { background: #f0fdf4; }
+
+    .zone-card { background: white; border-radius: 14px; padding: 24px; margin-bottom: 20px; border: 1px solid var(--border); border-left: 6px solid; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .zone-card.alta { border-left-color: var(--danger); }
+    .zone-card.media { border-left-color: var(--warning); }
+    .zone-card.baixa { border-left-color: var(--success); }
+    .zone-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+    .zone-code { font-size: 12px; font-weight: 800; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+    .zone-title { font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.2; }
+    .zone-locality { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+    .zone-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .zone-desc { font-size: 14px; color: var(--text-muted); margin: 10px 0 16px; line-height: 1.6; }
+    .zone-streets-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+    .zone-streets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .zone-street { background: #f1f5f9; border-radius: 6px; padding: 4px 10px; font-size: 13px; border: 1px solid var(--border); }
+    .zone-meta-row { display: flex; gap: 20px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13px; flex-wrap: wrap; }
+    .zone-meta-item { display: flex; flex-direction: column; gap: 2px; min-width: 110px; }
+    .zone-meta-item .meta-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .zone-meta-item .meta-val { font-weight: 700; color: var(--text); }
+
+    .team-card { background: white; border-radius: 12px; padding: 22px; border: 1px solid var(--border); }
+    .team-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .team-circle { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: white; flex-shrink: 0; }
+    .team-circle.a { background: var(--success); }
+    .team-circle.b { background: var(--secondary); }
+    .team-circle.c { background: #be185d; }
+
+    .toc { background: white; border-radius: 12px; padding: 24px; border: 1px solid var(--border); margin-bottom: 40px; }
+    .toc h3 { margin-top: 0; margin-bottom: 14px; }
+    .toc ol { padding-left: 20px; line-height: 2.2; }
+    .toc a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .toc a:hover { text-decoration: underline; }
+
+    .section-sep { border: none; border-top: 2px solid var(--border); margin: 48px 0; }
+    ul.styled { padding-left: 20px; }
+    ul.styled li { padding: 4px 0; }
+    ul.styled li::marker { color: var(--primary); }
+
+    .horario-bloco { display: flex; gap: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); margin: 16px 0; }
+    .horario-seg { padding: 14px 20px; text-align: center; flex: 1; }
+    .horario-seg.work { background: #f0fdf4; }
+    .horario-seg.break { background: #fffbeb; }
+    .horario-seg.free { background: #f1f5f9; }
+    .horario-seg .h-time { font-size: 16px; font-weight: 800; color: var(--text); }
+    .horario-seg .h-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .improve-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+    .improve-item:last-child { border-bottom: none; }
+    .improve-icon { font-size: 28px; flex-shrink: 0; }
+    .improve-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .improve-desc { font-size: 14px; color: var(--text-muted); }
+
+    .print-btn { position: fixed; bottom: 24px; right: 24px; background: var(--primary); color: white; border: none; border-radius: 50px; padding: 12px 24px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(44,110,73,0.4); z-index: 100; }
+    .print-btn:hover { background: var(--primary-dark); }
+
+    @media print {
+      body { background: white; font-size: 12px; }
+      .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 40px; }
+      .zone-card, .team-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cal-zone-hd, .cal-zone-ld, .cal-type-high, .cal-type-buffer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .zone-card { break-inside: avoid; }
+      .print-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Imprimir / PDF</button>
+
+<!-- CAPA -->
+<div class="cover">
+  <div class="cover-badge">DOCUMENTO OPERACIONAL — VERSÃO 2.0 — MAIO 2025</div>
+  <h1>🧹 Plano de Limpeza Integral<br>da Freguesia de Minde</h1>
+  <div class="subtitle">Minde · Covão do Coelho · Vale Alto — Concelho de Alcanena</div>
+  <div class="cover-meta">
+    <span><strong>20 Zonas Geográficas</strong>cobertura total da área habitada</span>
+    <span><strong>3 Equipas / 6 Elementos</strong>rotação anual coordenada</span>
+    <span><strong>Horário: 08h–16h</strong>4 dias úteis por semana</span>
+    <span><strong>Equipa Alcanena</strong>foco exclusivo nas zonas críticas de Minde</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ÍNDICE -->
+  <div class="toc">
+    <h3>📑 Índice</h3>
+    <ol>
+      <li><a href="#resumo">Resumo Executivo</a></li>
+      <li><a href="#recursos">Recursos Humanos e Organização das Equipas</a></li>
+      <li><a href="#horario">Horário Diário e Carga de Trabalho</a></li>
+      <li><a href="#zonas-minde">Zonas de Minde (Z01–Z13)</a></li>
+      <li><a href="#zonas-covao">Zonas do Covão do Coelho (Z14–Z17)</a></li>
+      <li><a href="#zonas-vale">Zonas do Vale Alto (Z18–Z20)</a></li>
+      <li><a href="#calendario">Calendário Anual de Rotação</a></li>
+      <li><a href="#melhorias">Sugestões de Melhoria</a></li>
+    </ol>
+  </div>
+
+  <!-- RESUMO -->
+  <h2 id="resumo">1. Resumo Executivo</h2>
+  <div class="card">
+    <p>O presente plano define a estratégia completa de limpeza para toda a área habitada da Freguesia de Minde, integrando a vila principal de <strong>Minde</strong> e as localidades de <strong>Covão do Coelho</strong> e <strong>Vale Alto</strong>, no concelho de Alcanena, distrito de Santarém.</p>
+    <br>
+    <p>A área habitada foi dividida em <strong>20 zonas geográficas</strong> com base no levantamento real das ruas de cada localidade, validado através do OpenStreetMap e do Google Maps. As zonas foram atribuídas a três equipas de dois elementos cada. O critério de inclusão de ruas é a existência de habitação permanente a menos de 200 metros da via.</p>
+    <br>
+    <p><strong>Novidade — Versão 2.0:</strong> A Equipa C (cedida pela Câmara Municipal de Alcanena) concentra-se exclusivamente nas 4 zonas de maior criticidade de Minde. As Equipas A e B asseguram a cobertura total das restantes 16 zonas, incluindo as aldeias.</p>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:32px;">
+    <div class="stat-box"><div class="val">20</div><div class="lbl">Zonas geográficas</div></div>
+    <div class="stat-box"><div class="val">3</div><div class="lbl">Equipas (6 elementos)</div></div>
+    <div class="stat-box"><div class="val">9</div><div class="lbl">Zonas críticas<br><small style="font-size:11px;">(limpeza cada 2 meses)</small></div></div>
+    <div class="stat-box"><div class="val">~52 ha</div><div class="lbl">Área total coberta<br><small style="font-size:11px;">(área habitada estimada)</small></div></div>
+  </div>
+
+  <div class="highlight-box">
+    <strong>Princípio orientador:</strong> As zonas com maior concentração habitacional e comercial recebem limpeza de <strong>2 em 2 meses</strong>. Todas as restantes zonas habitadas são limpas de <strong>6 em 6 meses</strong>. Nenhuma zona fica sem limpeza por mais de 6 meses consecutivos. Os meses de <strong>Junho</strong> e <strong>Dezembro</strong> são meses tampão para recuperação de atrasos.
+  </div>
+
+  <hr class="section-sep">
+
+  <!-- EQUIPAS -->
+  <h2 id="recursos">2. Recursos Humanos e Organização das Equipas</h2>
+
+  <div class="grid-3" style="margin-bottom:24px;">
+
+    <div class="team-card">
+      <div class="team-header">
+        <div class="team-circle a">A</div>
+        <div>
+          <div style="font-size:17px;font-weight:800;">Equipa A</div>
+          <div style="font-size:13px;color:var(--text-muted);">2 elementos · Local</div>
+        </div>
+      </div>
+      <div style="font-size:14px;line-height:1.9;">
+        <p><strong>Zonas de alta prioridade (cada 2m):</strong><br>Z04 · Z05 · Z09 · Z18</p>
+        <p style="margin-top:8px;"><strong>Zonas de baixa prioridade (cada 6m):</strong><br>Z06 · Z10 · Z13 · Z19</p>
+        <p style="margin-top:10px;color:var(--text-muted);font-size:13px;">Foco: Bairro Têxtil, Bairro Roque Gameiro, Zona da Paz, Periferia de Minde, Vale Alto</p>
+      </div>
+    </div>
+
+    <div class="team-card">
+      <div class="team-header">
+        <div class="team-circle b">B</div>
+        <div>
+          <div style="font-size:17px;font-weight:800;">Equipa B</div>
+          <div style="font-size:13px;color:var(--text-muted);">2 elementos · Local</div>
+        </div>
+      </div>
+      <div style="font-size:14px;line-height:1.9;">
+        <p><strong>Zonas de alta prioridade (cada 2m):</strong><br>Z14</p>
+        <p style="margin-top:8px;"><strong>Zonas de baixa prioridade (cada 6m):</strong><br>Z08 · Z11 · Z12 · Z15 · Z16 · Z17 · Z20</p>
+        <p style="margin-top:10px;color:var(--text-muted);font-size:13px;">Foco: Covão do Coelho (todas as zonas), Periferia de Minde, Vale Alto Sul</p>
+      </div>
+    </div>
+
+    <div class="team-card" style="border: 2px solid #f9a8d4;">
+      <div class="team-header">
+        <div class="team-circle c">C</div>
+        <div>
+          <div style="font-size:17px;font-weight:800;">Equipa C — Alcanena</div>
+          <div style="font-size:13px;color:#be185d;font-weight:600;">Câmara Municipal de Alcanena</div>
+        </div>
+      </div>
+      <div style="font-size:14px;line-height:1.9;">
+        <p><strong>Zonas exclusivas (todas Alta prioridade, cada 2m):</strong><br>Z01 · Z02 · Z03 · Z07</p>
+        <p style="margin-top:8px;"><strong>Sem intervenção em:</strong> Covão do Coelho nem Vale Alto</p>
+        <p style="margin-top:10px;color:#be185d;font-size:13px;font-weight:600;">Foco exclusivo: Centro Histórico, Praça, Zona Comercial e Bombeiros de Minde</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="danger-box">
+    <strong>⚠️ Nota sobre a Equipa C (Alcanena):</strong> Esta equipa é cedida pela Câmara Municipal de Alcanena para reforço das zonas de maior visibilidade e impacto público da vila de Minde. A sua atuação é restrita às 4 zonas mais críticas do centro de Minde. Qualquer redistribuição de zonas deve ser comunicada previamente à autarquia.
+  </div>
+
+  <hr class="section-sep">
+
+  <!-- HORÁRIO -->
+  <h2 id="horario">3. Horário Diário e Carga de Trabalho</h2>
+
+  <div class="card">
+    <h4>⏰ Horário Diário — 08h00 às 16h00</h4>
+    <div class="horario-bloco">
+      <div class="horario-seg work">
+        <div class="h-time">08:00 – 10:30</div>
+        <div class="h-label">Trabalho · 2h30</div>
+      </div>
+      <div class="horario-seg break">
+        <div class="h-time">10:30 – 11:00</div>
+        <div class="h-label">Pausa · 30min</div>
+      </div>
+      <div class="horario-seg work">
+        <div class="h-time">11:00 – 13:00</div>
+        <div class="h-label">Trabalho · 2h</div>
+      </div>
+      <div class="horario-seg break">
+        <div class="h-time">13:00 – 14:00</div>
+        <div class="h-label">Almoço · 1h</div>
+      </div>
+      <div class="horario-seg work">
+        <div class="h-time">14:00 – 16:00</div>
+        <div class="h-label">Trabalho · 2h</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">⏱️ Horas efetivas de trabalho por dia: <strong>6h30</strong> (com pausas) · 8h de presença total</p>
+  </div>
+
+  <div class="card">
+    <h4>📅 Regime de Trabalho — 4 Dias por Semana</h4>
+    <table>
+      <thead><tr><th>Parâmetro</th><th>Valor</th><th>Observação</th></tr></thead>
+      <tbody>
+        <tr><td>Dias úteis por semana</td><td><strong>4 dias</strong> (p.ex. Seg–Qui)</td><td>1 dia livre para outras funções (instalações, formação, urgências)</td></tr>
+        <tr><td>Horas efetivas/dia</td><td><strong>6h30</strong></td><td>Excluindo pausas e almoço</td></tr>
+        <tr><td>Horas efetivas/semana</td><td><strong>26h</strong></td><td>4 dias × 6h30</td></tr>
+        <tr><td>Horas efetivas/mês</td><td><strong>≈ 104h</strong></td><td>16 dias úteis × 6h30</td></tr>
+        <tr><td>Zona Alta densidade</td><td><strong>2 a 3 dias</strong></td><td>13h–20h de esforço efetivo</td></tr>
+        <tr><td>Zona Média densidade</td><td><strong>1,5 a 2,5 dias</strong></td><td>10h–16h de esforço efetivo</td></tr>
+        <tr><td>Zona Baixa densidade</td><td><strong>1 a 2 dias</strong></td><td>6h30–13h de esforço efetivo</td></tr>
+        <tr><td>Dia livre (5.º dia)</td><td>Sexta-feira (sugestão)</td><td>Manutenção de equipamentos, relatórios, urgências pontuais</td></tr>
+        <tr><td>Meses tampão</td><td>Junho e Dezembro</td><td>Sem agendamento fixo — reservados para recuperação de atrasos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-box">
+    <strong>Rotação anti-fadiga:</strong> As equipas alternam entre zonas de alta e baixa densidade dentro do mesmo mês para evitar monotonia e fadiga muscular. O dia livre semanal pode ser usado para responder a situações urgentes reportadas pelo sistema informático de registo.
+  </div>
+
+  <hr class="section-sep">
+
+  <!-- ZONAS MINDE -->
+  <h2 id="zonas-minde">4. Zonas de Minde (Z01 – Z13)</h2>
+
+  <div class="info-box" style="margin-bottom:28px;">
+    <strong>Dados reais:</strong> As ruas listadas foram verificadas e validadas através de OpenStreetMap, Google Maps e análise de fotografias aéreas (Google Maps, maio 2025). A área estimada de cada zona é calculada com base na extensão aproximada dos arruamentos incluídos.
+  </div>
+
+  <!-- Z01 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z01 · Minde</div>
+        <div class="zone-title">Centro Histórico / Igreja Matriz</div>
+        <div class="zone-locality">📍 Vila de Minde</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-c">Equipa C — Alcanena</span>
+      </div>
+    </div>
+    <div class="zone-desc">Núcleo histórico norte de Minde, com a Igreja Matriz, o Cruzeiro e o Painel das Almas. Ruas sinuosas e estreitas de alta concentração habitacional e forte passagem pedonal. Zona de maior produção de detritos no contexto festivo e religioso.</div>
+    <div class="zone-streets-title">Ruas incluídas (7)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua da Igreja</span>
+      <span class="zone-street">🛣️ Largo da Igreja</span>
+      <span class="zone-street">🛣️ Travessa da Igreja</span>
+      <span class="zone-street">🛣️ Largo Justino Pires</span>
+      <span class="zone-street">🛣️ Rua Padre Querido</span>
+      <span class="zone-street">🛣️ Rua do Cruzeiro</span>
+      <span class="zone-street">🛣️ Rua do Painel das Almas</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 1,2 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa C (Alcanena)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2,5 dias (≈ 16h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z02 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z02 · Minde</div>
+        <div class="zone-title">Centro Histórico / Praça Alberto Guedes</div>
+        <div class="zone-locality">📍 Vila de Minde</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-c">Equipa C — Alcanena</span>
+      </div>
+    </div>
+    <div class="zone-desc">Praça Alberto Guedes e arruamentos adjacentes. Praça 14 de Agosto, zona de passagem e encontro central da vila, com cafés e comércio de proximidade. Elevada produção de resíduos durante eventos e fins de semana.</div>
+    <div class="zone-streets-title">Ruas incluídas (7)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Praça Alberto Guedes</span>
+      <span class="zone-street">🛣️ Praça 14 de Agosto</span>
+      <span class="zone-street">🛣️ Rua do Remexido</span>
+      <span class="zone-street">🛣️ Beco de Rosa</span>
+      <span class="zone-street">🛣️ Rua da Sana</span>
+      <span class="zone-street">🛣️ Rua do Felgar</span>
+      <span class="zone-street">🛣️ Travessa do Neto</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 0,8 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa C (Alcanena)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z03 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z03 · Minde</div>
+        <div class="zone-title">Zona Comercial / Largo do Mercado</div>
+        <div class="zone-locality">📍 Vila de Minde</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-c">Equipa C — Alcanena</span>
+      </div>
+    </div>
+    <div class="zone-desc">Coração comercial de Minde com o Largo do Mercado, a Avenida principal e os principais estabelecimentos comerciais. Maior produção de resíduos da vila, com passagem diária intensa. Inclui a Sociedade Musical Mindense.</div>
+    <div class="zone-streets-title">Ruas incluídas (6)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Largo do Mercado</span>
+      <span class="zone-street">🛣️ Rua do Mercado</span>
+      <span class="zone-street">🛣️ Avenida José António de Carvalho</span>
+      <span class="zone-street">🛣️ Largo Justino Guedes</span>
+      <span class="zone-street">🛣️ Rua Jornal de Minde</span>
+      <span class="zone-street">🛣️ Rua da Sociedade Musical Mindense</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 1,5 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa C (Alcanena)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">3 dias (≈ 20h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z04 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z04 · Minde</div>
+        <div class="zone-title">Bairro Têxtil / Tecedeiras</div>
+        <div class="zone-locality">📍 Vila de Minde</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona da tradição têxtil de Minde, refletida nos nomes das ruas. Inclui a Rijoma — Indústria Têxtil e arruamentos adjacentes à fábrica. Alta densidade habitacional com produção de resíduos industriais ligeiros. A Rua Cândido Alves Fiel e a Rua do Cerco foram confirmadas por fotografia aérea (2025).</div>
+    <div class="zone-streets-title">Ruas incluídas (7)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua das Tecedeiras</span>
+      <span class="zone-street">🛣️ Travessa dos Cardadores</span>
+      <span class="zone-street">🛣️ Rua Marques de Carvalho</span>
+      <span class="zone-street">🛣️ Rua Lorenço Coelho</span>
+      <span class="zone-street">🛣️ Rua Capitão Meira</span>
+      <span class="zone-street">🛣️ Rua Cândido Alves Fiel</span>
+      <span class="zone-street">🛣️ Rua do Cerco</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 2,0 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">3 dias (≈ 20h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z05 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z05 · Minde</div>
+        <div class="zone-title">Bairro Roque Gameiro / Alegrim</div>
+        <div class="zone-locality">📍 Vila de Minde</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Arruamentos residenciais com nomes de figuras ilustres de Minde. Inclui as ruas dos Roque Gameiro (pintores mindenses de renome nacional), a Rua Francisco Manha e a Rua do Alegrim. Zona consolidada de habitação permanente.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua Alfredo Roque Gameiro</span>
+      <span class="zone-street">🛣️ Rua António Roque Gameiro</span>
+      <span class="zone-street">🛣️ Rua Miguel Coelho dos Reis</span>
+      <span class="zone-street">🛣️ Rua Francisco Manha</span>
+      <span class="zone-street">🛣️ Rua do Alegrim</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 1,8 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2,5 dias (≈ 16h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z06 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z06 · Minde</div>
+        <div class="zone-title">Bairro do Carro Velho / Escolas Novas</div>
+        <div class="zone-locality">📍 Vila de Minde — Noroeste</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Expansão urbana mais recente a noroeste da vila. Habitação dispersa em moradias isoladas e pequenos loteamentos. Inclui a Rua Cabeço da Barreira, confirmada por fotografia aérea (imagem 14, 2025). Menor produção de resíduos por habitante.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Alameda do Carro Velho</span>
+      <span class="zone-street">🛣️ Bairro do Carro Velho</span>
+      <span class="zone-street">🛣️ Rua das Escolas Novas</span>
+      <span class="zone-street">🛣️ Rua Calouste Gulbenkian</span>
+      <span class="zone-street">🛣️ Rua Cabeço da Barreira</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 3,5 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Fevereiro · Agosto</div></div>
+    </div>
+  </div>
+
+  <!-- Z07 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z07 · Minde</div>
+        <div class="zone-title">Zona dos Bombeiros / Eclesiástica</div>
+        <div class="zone-locality">📍 Vila de Minde — Centro-Oeste</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-c">Equipa C — Alcanena</span>
+      </div>
+    </div>
+    <div class="zone-desc">Largo dos Bombeiros Voluntários de Minde e ruas com nomes eclesiásticos adjacentes. Tráfego elevado ao fim de semana. A Rua Jaime Chavinha e a Rua da Vitória (junto ao campo de futebol) foram confirmadas por fotografia aérea (imagens 15–16, 2025).</div>
+    <div class="zone-streets-title">Ruas incluídas (7)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Largo dos Bombeiros</span>
+      <span class="zone-street">🛣️ Rua da Associação dos Bombeiros Voluntários</span>
+      <span class="zone-street">🛣️ Rua Frei Silvestre</span>
+      <span class="zone-street">🛣️ Rua Monsenhor Michel</span>
+      <span class="zone-street">🛣️ Rua Cónego Feliciano da Assunção</span>
+      <span class="zone-street">🛣️ Rua Jaime Chavinha</span>
+      <span class="zone-street">🛣️ Rua da Vitória</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 1,2 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa C (Alcanena)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z08 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z08 · Minde</div>
+        <div class="zone-title">Zona dos Penedos / Serra de Aire</div>
+        <div class="zone-locality">📍 Vila de Minde — Sudoeste</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona de transição entre o edificado e a paisagem natural. Habitação dispersa com referências à Serra de Aire. A Rua das Cruzinhas e a Estrada do Peregrino foram confirmadas por fotografia aérea (imagem 19, 2025), junto ao Centro de Saúde de Minde.</div>
+    <div class="zone-streets-title">Ruas incluídas (6)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua Serra de Aire</span>
+      <span class="zone-street">🛣️ Rua dos Penedos</span>
+      <span class="zone-street">🛣️ Travessa dos Penedos</span>
+      <span class="zone-street">🛣️ Rua do Outeiro</span>
+      <span class="zone-street">🛣️ Rua das Cruzinhas</span>
+      <span class="zone-street">🛣️ Estrada do Peregrino</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 4,0 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Janeiro · Julho</div></div>
+    </div>
+  </div>
+
+  <!-- Z09 -->
+  <div class="zone-card media">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z09 · Minde</div>
+        <div class="zone-title">Zona da Paz / Nossa Senhora</div>
+        <div class="zone-locality">📍 Vila de Minde — Norte</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-media">Média densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Bairro residencial com ruas de devoção religiosa. Inclui a Rua Nossa Senhora de Fátima (confirmada por fotografia aérea). Zona tranquila de habitação consolidada com passagem pedonal moderada.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua da Paz</span>
+      <span class="zone-street">🛣️ Rua de Santo António</span>
+      <span class="zone-street">🛣️ Rua de São Bento</span>
+      <span class="zone-street">🛣️ Rua Nossa Senhora de Fátima</span>
+      <span class="zone-street">🛣️ Rua Nossa Senhora do Cerejal</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 2,5 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2,5 dias (≈ 16h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z10 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z10 · Minde</div>
+        <div class="zone-title">Zona dos Doutores / Sul</div>
+        <div class="zone-locality">📍 Vila de Minde — Sul</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Arruamentos sul com nomes de figuras académicas ilustres de Minde. A Avenida das Cabecinas foi confirmada por fotografia aérea (imagens 20–21, 2025), correndo a sudeste em direção à saída para Alcanena.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua Doutor António da Silva Ferreira Totta</span>
+      <span class="zone-street">🛣️ Rua Doutor João Higino</span>
+      <span class="zone-street">🛣️ Rua Professor Costa Ferreira</span>
+      <span class="zone-street">🛣️ Rua do Depósito</span>
+      <span class="zone-street">🛣️ Avenida das Cabecinas</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 3,0 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">1,5 dias (≈ 10h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Fevereiro · Agosto</div></div>
+    </div>
+  </div>
+
+  <!-- Z11 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z11 · Minde</div>
+        <div class="zone-title">Zona dos Loureiros / Lagar Calé</div>
+        <div class="zone-locality">📍 Vila de Minde — Oeste</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Arruamentos oeste com o Lagar Calé (confirmado por fotografia aérea como "R. Lagarcale") e a Rua dos Loureiros. Zona tranquila com vegetação densa entre habitações. Acesso por vias estreitas.</div>
+    <div class="zone-streets-title">Ruas incluídas (4)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua dos Loureiros</span>
+      <span class="zone-street">🛣️ Rua Lagar Calé</span>
+      <span class="zone-street">🛣️ Travessa da Freira</span>
+      <span class="zone-street">🛣️ Travessa do Beringeis</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 2,8 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">1,5 dias (≈ 10h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Fevereiro · Agosto</div></div>
+    </div>
+  </div>
+
+  <!-- Z12 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z12 · Minde</div>
+        <div class="zone-title">Periferia Norte / Avenida São Sebastião</div>
+        <div class="zone-locality">📍 Vila de Minde — Norte</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona norte com a Avenida de São Sebastião e arruamentos periféricos. Habitação mais dispersa com residentes permanentes. Acesso direto à N360 em direção a Fátima.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Avenida de São Sebastião</span>
+      <span class="zone-street">🛣️ Rua de Santana</span>
+      <span class="zone-street">🛣️ Rua do Sol Posto</span>
+      <span class="zone-street">🛣️ Rua Padre Paulo</span>
+      <span class="zone-street">🛣️ Rua Doutor Ernesto Teixeira Guedes</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 4,5 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Março · Setembro</div></div>
+    </div>
+  </div>
+
+  <!-- Z13 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z13 · Minde</div>
+        <div class="zone-title">Periferia Sul / Largo das Eiras</div>
+        <div class="zone-locality">📍 Vila de Minde — Sul</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona sul com o Largo das Eiras, ruas com nomes de figuras históricas e o Trilho do Russo. Zona de transição entre Minde e Vale Alto. Inclui o Capitão Salgueiro Maia e o Maestro José da Silva Júnior, confirmados no levantamento.</div>
+    <div class="zone-streets-title">Ruas incluídas (9)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Largo das Eiras</span>
+      <span class="zone-street">🛣️ Rua das Escolas</span>
+      <span class="zone-street">🛣️ Rua de Emídio da Silva Raposo</span>
+      <span class="zone-street">🛣️ Rua de Nuno Álvares Ferreira</span>
+      <span class="zone-street">🛣️ Rua Maestro José da Silva Júnior</span>
+      <span class="zone-street">🛣️ Rua Capitão Salgueiro Maia</span>
+      <span class="zone-street">🛣️ Rua João Martins</span>
+      <span class="zone-street">🛣️ Rua Maria José Borges</span>
+      <span class="zone-street">🛣️ Trilho do Russo</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 3,8 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Abril · Outubro</div></div>
+    </div>
+  </div>
+
+  <hr class="section-sep">
+
+  <!-- ZONAS COVÃO -->
+  <h2 id="zonas-covao">5. Zonas do Covão do Coelho (Z14 – Z17)</h2>
+
+  <div class="highlight-box" style="margin-bottom:24px;">
+    <strong>Cobertura total de Covão do Coelho pela Equipa B.</strong> Todas as ruas foram verificadas por fotografia aérea Google Maps (imagens 6–13, maio 2025). A Rua da Lomba (Z15) foi confirmada como habitada por residente local.
+  </div>
+
+  <!-- Z14 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z14 · Covão do Coelho</div>
+        <div class="zone-title">Centro / Igreja</div>
+        <div class="zone-locality">📍 Aldeia de Covão do Coelho</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Núcleo central da aldeia em torno da Igreja e da Fonte do Largo. Maior concentração habitacional. Inclui as ruas comerciais principais, a Taberna da Jaquina, o Café Ideal e a Associação Desportiva. Confirmado por fotografia aérea (imagem 10, 2025).</div>
+    <div class="zone-streets-title">Ruas incluídas (11)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua da Igreja</span>
+      <span class="zone-street">🛣️ Rua das Quintas</span>
+      <span class="zone-street">🛣️ Rua do Nicho</span>
+      <span class="zone-street">🛣️ Rua do Matadouro</span>
+      <span class="zone-street">🛣️ Rua da Escola</span>
+      <span class="zone-street">🛣️ Travessa da Escola</span>
+      <span class="zone-street">🛣️ Rua de Timor</span>
+      <span class="zone-street">🛣️ Rua da Portela</span>
+      <span class="zone-street">🛣️ Rua Vila de Alcanena</span>
+      <span class="zone-street">🛣️ Rua da Padaria</span>
+      <span class="zone-street">🛣️ Rua das Eiras</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 1,5 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2,5 dias (≈ 16h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z15 -->
+  <div class="zone-card media">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z15 · Covão do Coelho</div>
+        <div class="zone-title">Zona da Lomba</div>
+        <div class="zone-locality">📍 Aldeia de Covão do Coelho — Sul</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-media">Média densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona sul da aldeia em torno da Lomba. A Rua da Lomba foi confirmada como habitada por residente local (morador na Rua da Lomba, Covão do Coelho). A Rua Encosta da Lomba é claramente visível na fotografia aérea (imagem 9). Zona de expansão recente.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua da Lomba</span>
+      <span class="zone-street">🛣️ Rua Encosta da Lomba</span>
+      <span class="zone-street">🛣️ Rua Sítio da Lomba</span>
+      <span class="zone-street">🛣️ Rua das Lombinhas</span>
+      <span class="zone-street">🛣️ Rua da Madruga</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 2,0 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Fevereiro · Agosto</div></div>
+    </div>
+  </div>
+
+  <!-- Z16 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z16 · Covão do Coelho</div>
+        <div class="zone-title">Eira Velha / Norte</div>
+        <div class="zone-locality">📍 Aldeia de Covão do Coelho — Norte</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona norte da aldeia com as ruas da Eira Velha. Habitação mais dispersa com acessos estreitos. A Rua da Eira Velha foi confirmada por fotografia aérea (imagem 11). Inclui o miradouro/estação pitoresca na parte mais alta.</div>
+    <div class="zone-streets-title">Ruas incluídas (8)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua da Eira Velha</span>
+      <span class="zone-street">🛣️ Rua Chão das Pias</span>
+      <span class="zone-street">🛣️ Rua do Meio</span>
+      <span class="zone-street">🛣️ Rua das Flores</span>
+      <span class="zone-street">🛣️ Rua da Escola Velha</span>
+      <span class="zone-street">🛣️ Rua Pia do Luzia</span>
+      <span class="zone-street">🛣️ Rua da Ladeira</span>
+      <span class="zone-street">🛣️ Rua da Cabine</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 3,0 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">1,5 dias (≈ 10h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Abril · Outubro</div></div>
+    </div>
+  </div>
+
+  <!-- Z17 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z17 · Covão do Coelho</div>
+        <div class="zone-title">Periferia / Cemitério</div>
+        <div class="zone-locality">📍 Aldeia de Covão do Coelho — Este/Sul</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Periferia leste e sul com o cemitério, a zona dos países lusófonos e arruamentos mais rurais com habitações permanentes. A Rua da Lagoinha foi confirmada por fotografia aérea (imagem 10). A zona industrial junto à A23 (imagem 6) tem apenas acessos de serviço não incluídos.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua de Angola</span>
+      <span class="zone-street">🛣️ Rua de Moçambique</span>
+      <span class="zone-street">🛣️ Rua da Lagoinha</span>
+      <span class="zone-street">🛣️ Rua da Trapa</span>
+      <span class="zone-street">🛣️ Rua do Cemitério</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 2,5 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">1,5 dias (≈ 10h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Abril · Outubro</div></div>
+    </div>
+  </div>
+
+  <hr class="section-sep">
+
+  <!-- ZONAS VALE ALTO -->
+  <h2 id="zonas-vale">6. Zonas do Vale Alto (Z18 – Z20)</h2>
+
+  <div class="highlight-box" style="margin-bottom:24px;">
+    <strong>Cobertura total de Vale Alto pelas Equipas A e B.</strong> Todas as ruas foram verificadas por fotografia aérea Google Maps (imagens 2–5, maio 2025). A Rua Nossa Sra. da Guia e as Ruas das Pedreiras, Floresta e Chousas foram confirmadas visualmente.
+  </div>
+
+  <!-- Z18 -->
+  <div class="zone-card alta">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z18 · Vale Alto</div>
+        <div class="zone-title">Centro / Igreja</div>
+        <div class="zone-locality">📍 Aldeia de Vale Alto</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-alta">Alta densidade</span>
+        <span class="badge badge-2m">Cada 2 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Núcleo central de Vale Alto em torno da Igreja e do Restaurante Simões. Zona de maior densidade da aldeia com as ruas principais convergindo no largo central. Confirmado por fotografia aérea (imagem 3, N360 visível).</div>
+    <div class="zone-streets-title">Ruas incluídas (6)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua da Igreja</span>
+      <span class="zone-street">🛣️ Rua da Escola</span>
+      <span class="zone-street">🛣️ Travessa da Escola</span>
+      <span class="zone-street">🛣️ Rua Nossa Sra. da Guia</span>
+      <span class="zone-street">🛣️ Rua do Canto</span>
+      <span class="zone-street">🛣️ Rua Serra de Aire</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 1,2 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 2 em 2 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Jan · Mar · Mai · Jul · Set · Nov</div></div>
+    </div>
+  </div>
+
+  <!-- Z19 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z19 · Vale Alto</div>
+        <div class="zone-title">Norte / Pedreiras</div>
+        <div class="zone-locality">📍 Aldeia de Vale Alto — Norte</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-a">Equipa A</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona norte da aldeia com habitação dispersa. A Rua das Pedreiras e a Rua da Floresta foram confirmadas por fotografia aérea (imagens 2–4). Acesso por vias mais estreitas, com habitações permanentes identificadas.</div>
+    <div class="zone-streets-title">Ruas incluídas (5)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua das Pedreiras</span>
+      <span class="zone-street">🛣️ Rua da Floresta</span>
+      <span class="zone-street">🛣️ Rua Micoso Mico</span>
+      <span class="zone-street">🛣️ Rua da Fraguinha</span>
+      <span class="zone-street">🛣️ Rua da Fareta</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 3,5 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa A</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">2 dias (≈ 13h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Abril · Outubro</div></div>
+    </div>
+  </div>
+
+  <!-- Z20 -->
+  <div class="zone-card baixa">
+    <div class="zone-header">
+      <div>
+        <div class="zone-code">Z20 · Vale Alto</div>
+        <div class="zone-title">Sul / Moinhos</div>
+        <div class="zone-locality">📍 Aldeia de Vale Alto — Sul</div>
+      </div>
+      <div class="zone-badges">
+        <span class="badge badge-baixa">Baixa densidade</span>
+        <span class="badge badge-6m">Cada 6 meses</span>
+        <span class="badge badge-b">Equipa B</span>
+      </div>
+    </div>
+    <div class="zone-desc">Zona sul e periférica de Vale Alto com a Rua das Chousas (confirmada por fotografia aérea, imagens 4–5) e os moinhos históricos. Habitação mais dispersa em direção à saída da aldeia em direção ao N260.</div>
+    <div class="zone-streets-title">Ruas incluídas (4)</div>
+    <div class="zone-streets">
+      <span class="zone-street">🛣️ Rua das Eiras</span>
+      <span class="zone-street">🛣️ Rua dos Moinhos</span>
+      <span class="zone-street">🛣️ Rua das Ladeiras</span>
+      <span class="zone-street">🛣️ Rua das Chousas</span>
+    </div>
+    <div class="zone-meta-row">
+      <div class="zone-meta-item"><div class="meta-label">Área estimada</div><div class="meta-val">≈ 2,8 ha</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Frequência</div><div class="meta-val">De 6 em 6 meses</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Equipa</div><div class="meta-val">Equipa B</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Tempo estimado</div><div class="meta-val">1,5 dias (≈ 10h)</div></div>
+      <div class="zone-meta-item"><div class="meta-label">Meses de intervenção</div><div class="meta-val">Abril · Outubro</div></div>
+    </div>
+  </div>
+
+  <hr class="section-sep">
+
+  <!-- CALENDÁRIO -->
+  <h2 id="calendario">7. Calendário Anual de Rotação</h2>
+
+  <div class="warning-box">
+    <strong>Regime de 4 dias/semana:</strong> Cada equipa dispõe de 4 dias úteis por semana (≈ 16 dias/mês). O 5.º dia útil fica reservado para urgências, manutenção de equipamentos, formação e preenchimento de registos. <strong>Junho e Dezembro são meses tampão</strong> — sem agendamento fixo, usados para recuperar atrasos ou limpar zonas com situações urgentes.
+  </div>
+
+  <div style="overflow-x:auto; margin: 24px 0;">
+    <table class="cal-table">
+      <thead>
+        <tr>
+          <th style="width:110px;">Mês</th>
+          <th style="width:60px;">Tipo</th>
+          <th>Equipa A <span style="font-weight:400;font-size:11px;">(local)</span></th>
+          <th>Equipa B <span style="font-weight:400;font-size:11px;">(local)</span></th>
+          <th>Equipa C — Alcanena <span style="font-weight:400;font-size:11px;">(Minde crítico)</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cal-month-label">Janeiro</td>
+          <td><span class="badge badge-alta" style="font-size:11px;">Normal</span></td>
+          <td>
+            <span class="cal-zone-hd">Z04</span><span class="cal-zone-hd">Z05</span>
+            <span class="cal-zone-hd">Z09</span><span class="cal-zone-hd">Z18</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z14</span><span class="cal-zone-ld">Z08</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z01</span><span class="cal-zone-hd">Z02</span>
+            <span class="cal-zone-hd">Z03</span><span class="cal-zone-hd">Z07</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Fevereiro</td>
+          <td><span class="badge badge-baixa" style="font-size:11px;">Leve</span></td>
+          <td>
+            <span class="cal-zone-ld">Z06</span><span class="cal-zone-ld">Z10</span>
+          </td>
+          <td>
+            <span class="cal-zone-ld">Z11</span><span class="cal-zone-ld">Z15</span>
+          </td>
+          <td style="color:var(--text-muted);font-style:italic;font-size:13px;">— sem intervenção —</td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Março</td>
+          <td><span class="badge badge-alta" style="font-size:11px;">Normal</span></td>
+          <td>
+            <span class="cal-zone-hd">Z04</span><span class="cal-zone-hd">Z05</span>
+            <span class="cal-zone-hd">Z09</span><span class="cal-zone-hd">Z18</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z14</span><span class="cal-zone-ld">Z12</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z01</span><span class="cal-zone-hd">Z02</span>
+            <span class="cal-zone-hd">Z03</span><span class="cal-zone-hd">Z07</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Abril</td>
+          <td><span class="badge badge-baixa" style="font-size:11px;">Leve</span></td>
+          <td>
+            <span class="cal-zone-ld">Z13</span><span class="cal-zone-ld">Z19</span>
+          </td>
+          <td>
+            <span class="cal-zone-ld">Z16</span><span class="cal-zone-ld">Z17</span><span class="cal-zone-ld">Z20</span>
+          </td>
+          <td style="color:var(--text-muted);font-style:italic;font-size:13px;">— sem intervenção —</td>
+        </tr>
+        <tr class="cal-type-high">
+          <td class="cal-month-label">Maio 🌿</td>
+          <td><span class="badge badge-media" style="font-size:11px;">Intenso</span></td>
+          <td>
+            <span class="cal-zone-hd">Z04</span><span class="cal-zone-hd">Z05</span>
+            <span class="cal-zone-hd">Z09</span><span class="cal-zone-hd">Z18</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z14</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z01</span><span class="cal-zone-hd">Z02</span>
+            <span class="cal-zone-hd">Z03</span><span class="cal-zone-hd">Z07</span>
+          </td>
+        </tr>
+        <tr class="cal-type-buffer">
+          <td class="cal-month-label">Junho 🛑</td>
+          <td><span class="badge badge-gray" style="font-size:11px;">Tampão</span></td>
+          <td colspan="3" style="text-align:center;" class="cal-buf">Mês de reserva — sem agendamento fixo. Usado para recuperar atrasos e responder a urgências.</td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Julho</td>
+          <td><span class="badge badge-alta" style="font-size:11px;">Normal</span></td>
+          <td>
+            <span class="cal-zone-hd">Z04</span><span class="cal-zone-hd">Z05</span>
+            <span class="cal-zone-hd">Z09</span><span class="cal-zone-hd">Z18</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z14</span><span class="cal-zone-ld">Z08</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z01</span><span class="cal-zone-hd">Z02</span>
+            <span class="cal-zone-hd">Z03</span><span class="cal-zone-hd">Z07</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Agosto</td>
+          <td><span class="badge badge-baixa" style="font-size:11px;">Leve</span></td>
+          <td>
+            <span class="cal-zone-ld">Z06</span><span class="cal-zone-ld">Z10</span>
+          </td>
+          <td>
+            <span class="cal-zone-ld">Z11</span><span class="cal-zone-ld">Z15</span>
+          </td>
+          <td style="color:var(--text-muted);font-style:italic;font-size:13px;">— sem intervenção —</td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Setembro</td>
+          <td><span class="badge badge-alta" style="font-size:11px;">Normal</span></td>
+          <td>
+            <span class="cal-zone-hd">Z04</span><span class="cal-zone-hd">Z05</span>
+            <span class="cal-zone-hd">Z09</span><span class="cal-zone-hd">Z18</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z14</span><span class="cal-zone-ld">Z12</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z01</span><span class="cal-zone-hd">Z02</span>
+            <span class="cal-zone-hd">Z03</span><span class="cal-zone-hd">Z07</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Outubro</td>
+          <td><span class="badge badge-baixa" style="font-size:11px;">Leve</span></td>
+          <td>
+            <span class="cal-zone-ld">Z13</span><span class="cal-zone-ld">Z19</span>
+          </td>
+          <td>
+            <span class="cal-zone-ld">Z16</span><span class="cal-zone-ld">Z17</span><span class="cal-zone-ld">Z20</span>
+          </td>
+          <td style="color:var(--text-muted);font-style:italic;font-size:13px;">— sem intervenção —</td>
+        </tr>
+        <tr>
+          <td class="cal-month-label">Novembro</td>
+          <td><span class="badge badge-alta" style="font-size:11px;">Normal</span></td>
+          <td>
+            <span class="cal-zone-hd">Z04</span><span class="cal-zone-hd">Z05</span>
+            <span class="cal-zone-hd">Z09</span><span class="cal-zone-hd">Z18</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z14</span>
+          </td>
+          <td>
+            <span class="cal-zone-hd">Z01</span><span class="cal-zone-hd">Z02</span>
+            <span class="cal-zone-hd">Z03</span><span class="cal-zone-hd">Z07</span>
+          </td>
+        </tr>
+        <tr class="cal-type-buffer">
+          <td class="cal-month-label">Dezembro 🛑</td>
+          <td><span class="badge badge-gray" style="font-size:11px;">Tampão</span></td>
+          <td colspan="3" style="text-align:center;" class="cal-buf">Mês de reserva — Festas e encerramento de ano. Utilizado para balanço anual e preparação do plano do ano seguinte.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-3" style="margin-top:24px;margin-bottom:32px;">
+    <div class="stat-box">
+      <div class="val" style="font-size:28px;">6×/ano</div>
+      <div class="lbl">Limpezas das zonas críticas<br>(Jan·Mar·Mai·Jul·Set·Nov)</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" style="font-size:28px;">2×/ano</div>
+      <div class="lbl">Limpezas das zonas baixa densidade<br>(nos meses leves e normais)</div>
+    </div>
+    <div class="stat-box">
+      <div class="val" style="font-size:28px;">2</div>
+      <div class="lbl">Meses tampão anuais<br>(Junho e Dezembro)</div>
+    </div>
+  </div>
+
+  <hr class="section-sep">
+
+  <!-- MELHORIAS -->
+  <h2 id="melhorias">8. Sugestões de Melhoria e Otimização</h2>
+
+  <div class="card">
+    <div class="improve-item">
+      <div class="improve-icon">📱</div>
+      <div>
+        <div class="improve-title">Sistema Digital de Registo (já implementado)</div>
+        <div class="improve-desc">A aplicação web em <strong>index.html</strong> permite o registo diário de limpezas por cada equipa, com dashboard de estado, histórico, exportação CSV e relatórios de conformidade. Inclui agora gestão de ruas por zona e sistema de reporte de urgências.</div>
+      </div>
+    </div>
+    <div class="improve-item">
+      <div class="improve-icon">🚨</div>
+      <div>
+        <div class="improve-title">Sistema de Urgências</div>
+        <div class="improve-desc">Qualquer equipa pode reportar situações urgentes (despejo ilegal, obstáculos, entulho) diretamente na app. O administrador gere o estado de cada urgência. O dia livre semanal (5.º dia) pode ser usado para responder a urgências priorizadas.</div>
+      </div>
+    </div>
+    <div class="improve-item">
+      <div class="improve-icon">🗺️</div>
+      <div>
+        <div class="improve-title">Gestão Dinâmica de Ruas</div>
+        <div class="improve-desc">A app permite adicionar ou remover ruas de cada zona diretamente, com validação automática para garantir que nenhuma rua pertence a mais de uma zona simultaneamente. As alterações ficam guardadas localmente.</div>
+      </div>
+    </div>
+    <div class="improve-item">
+      <div class="improve-icon">📷</div>
+      <div>
+        <div class="improve-title">Registo Fotográfico</div>
+        <div class="improve-desc">Cada registo de limpeza suporta upload de fotografia como evidência da intervenção. Recomenda-se tirar uma foto antes e depois em zonas críticas, especialmente após eventos ou festas locais.</div>
+      </div>
+    </div>
+    <div class="improve-item">
+      <div class="improve-icon">🌱</div>
+      <div>
+        <div class="improve-title">Validação Local Periódica</div>
+        <div class="improve-desc">Recomenda-se uma reunião trimestral com o Presidente da Junta de Freguesia para validar a lista de ruas habitadas, identificar novas construções ou abandonos, e ajustar zonas conforme necessário. A app suporta alterações via admin.</div>
+      </div>
+    </div>
+    <div class="improve-item">
+      <div class="improve-icon">📊</div>
+      <div>
+        <div class="improve-title">Relatório Anual de Conformidade</div>
+        <div class="improve-desc">No final de cada ano, exportar os dados via CSV da app para verificar: zonas limpas dentro do prazo, número de urgências reportadas e resolvidas, horas investidas por equipa, e propostas de ajuste ao plano para o ano seguinte.</div>
+      </div>
+    </div>
+    <div class="improve-item">
+      <div class="improve-icon">🤝</div>
+      <div>
+        <div class="improve-title">Protocolo Equipa C / Alcanena</div>
+        <div class="improve-desc">Definir formalmente o protocolo de comunicação com a Câmara Municipal de Alcanena para a Equipa C: calendário de intervenção, ponto de contacto, registo das intervenções no sistema, e procedimento em caso de ausência da equipa (substituição por Equipa A ou B).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top:32px;">
+    <strong>Versão do documento:</strong> 2.0 — Maio 2025 · Dados de ruas validados por OpenStreetMap + Google Maps (30 fotografias aéreas, maio 2025) · Equipa C reconfigurada para Minde crítico · Regime de 4 dias úteis / semana · Horário 08h00–16h00
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>
