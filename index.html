@@ -918,10 +918,24 @@
 // DADOS — 20 ZONAS GEOGRÁFICAS
 // ============================================================
 const TEAMS_DATA = {
-  A: { name: 'Equipa A', password: 'equipaA2024', color: '#2c6e49', emoji: '🟢' },
-  B: { name: 'Equipa B', password: 'equipaB2024', color: '#3b82f6', emoji: '🔵' },
-  C: { name: 'Equipa C', password: 'equipaC2024', color: '#e11d48', emoji: '🔴' },
-  admin: { name: 'Administrador', password: 'admin2024', color: '#6b7280', emoji: '⚙️' }
+  A:     { name: 'Equipa A',       color: '#2c6e49', emoji: '🟢' },
+  B:     { name: 'Equipa B',       color: '#3b82f6', emoji: '🔵' },
+  C:     { name: 'Equipa C',       color: '#e11d48', emoji: '🔴' },
+  admin: { name: 'Administrador',  color: '#6b7280', emoji: '⚙️' }
+};
+
+// Mapa email Supabase ↔ equipa
+const EMAIL_TO_TEAM = {
+  'equipaA@minde.pt': 'A',
+  'equipaB@minde.pt': 'B',
+  'equipaC@minde.pt': 'C',
+  'admin@minde.pt':   'admin',
+};
+const TEAM_TO_EMAIL = {
+  A:     'equipaA@minde.pt',
+  B:     'equipaB@minde.pt',
+  C:     'equipaC@minde.pt',
+  admin: 'admin@minde.pt',
 };
 
 const ZONES = [
@@ -1194,17 +1208,9 @@ function formatDate(d) {
 }
 
 // ============================================================
-// LOGIN / LOGOUT
+// LOGIN / LOGOUT — Supabase Auth
 // ============================================================
-function doLogin() {
-  const team = document.getElementById('login-team').value;
-  const pass = document.getElementById('login-password').value;
-  const err = document.getElementById('login-error');
-  if (!team) { err.style.display = 'block'; err.textContent = 'Selecione uma equipa.'; return; }
-  if (!TEAMS_DATA[team] || TEAMS_DATA[team].password !== pass) {
-    err.style.display = 'block'; return;
-  }
-  err.style.display = 'none';
+function enterApp(team) {
   currentTeam = team;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
@@ -1212,7 +1218,35 @@ function doLogin() {
   initApp();
   showSection('dashboard');
 }
-function doLogout() {
+
+async function doLogin() {
+  const team = document.getElementById('login-team').value;
+  const pass = document.getElementById('login-password').value;
+  const err  = document.getElementById('login-error');
+  const btn  = document.querySelector('.btn-login');
+
+  if (!team) { err.style.display = 'block'; err.textContent = 'Selecione uma equipa.'; return; }
+
+  btn.textContent = 'A entrar...';
+  btn.disabled = true;
+  err.style.display = 'none';
+
+  try {
+    const { error } = await _sb.auth.signInWithPassword({ email: TEAM_TO_EMAIL[team], password: pass });
+    if (error) throw error;
+    await initDB();
+    enterApp(team);
+  } catch(e) {
+    err.style.display = 'block';
+    err.textContent = 'Password incorrecta. Tente novamente.';
+  } finally {
+    btn.textContent = 'Entrar';
+    btn.disabled = false;
+  }
+}
+
+async function doLogout() {
+  await _sb.auth.signOut();
   currentTeam = null;
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
@@ -2701,10 +2735,25 @@ async function updateUrgenciaStatus(id, status) {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
-  await initDB();
   document.getElementById('login-password').addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin();
   });
+
+  // Verificar se já existe uma sessão activa (evita login após refresh)
+  try {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session) {
+      const team = EMAIL_TO_TEAM[session.user.email];
+      if (team) {
+        await initDB();
+        enterApp(team);
+        return;
+      }
+    }
+  } catch(e) { /* ignorar — mostra login */ }
+
+  // Sem sessão: esconder loading e mostrar login
+  document.getElementById('app-loading').style.display = 'none';
 });
 </script>
 </body>
