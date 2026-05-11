@@ -441,6 +441,7 @@
     <button class="nav-btn" data-section="reports" onclick="showSection('reports')">📈 Relatórios</button>
     <button class="nav-btn" data-section="urgencias" onclick="showSection('urgencias')" id="nav-urgencias">🚨 Urgências<span class="tab-badge" id="urgencias-badge" style="display:none;">0</span></button>
     <button class="nav-btn" data-section="admin" onclick="showSection('admin')" id="nav-admin" style="display:none;">⚙️ Admin</button>
+    <a class="nav-btn" href="/plano" target="_blank" id="nav-plano" style="display:none;text-decoration:none;">📄 Plano Integral</a>
   </nav>
 
   <!-- ===== DASHBOARD ===== -->
@@ -1314,6 +1315,8 @@ function initApp() {
   // Show/hide admin nav
   const adminNav = document.getElementById('nav-admin');
   if (adminNav) adminNav.style.display = currentTeam === 'admin' ? '' : 'none';
+  const planoNav = document.getElementById('nav-plano');
+  if (planoNav) planoNav.style.display = currentTeam === 'admin' ? '' : 'none';
   // Update urgências badge
   updateUrgenciasBadge();
   // Listen for localStorage changes (other tabs)
