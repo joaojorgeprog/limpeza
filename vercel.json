@@ -1,11 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "index.html",  "use": "@vercel/static" },
-    { "src": "plano.html",  "use": "@vercel/static" }
+    { "src": "index.html",   "use": "@vercel/static" },
+    { "src": "api/plano.js", "use": "@vercel/node",
+      "config": { "includeFiles": ["plano.html"] } }
   ],
   "routes": [
-    { "src": "/plano",      "dest": "/plano.html" },
-    { "src": "/(.*)",       "dest": "/index.html" }
+    { "src": "/plano",  "dest": "/api/plano" },
+    { "src": "/(.*)",   "dest": "/index.html" }
   ]
 }

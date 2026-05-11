@@ -2743,6 +2743,18 @@ async function updateUrgenciaStatus(id, status) {
 // ============================================================
 // INIT
 // ============================================================
+// Sincronizar cookie seguro com a sessão Supabase.
+// Necessário para que o servidor valide o acesso a /plano.
+// Dispara em: login, logout, refresh automático do token.
+_sb.auth.onAuthStateChange((event, session) => {
+  if (session && session.user.email === 'admin@minde.pt') {
+    const expires = new Date(session.expires_at * 1000).toUTCString();
+    document.cookie = `sb_admin=${session.access_token}; path=/; SameSite=Strict; Secure; expires=${expires}`;
+  } else {
+    document.cookie = 'sb_admin=; path=/; Max-Age=0; SameSite=Strict; Secure';
+  }
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('login-password').addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin();
